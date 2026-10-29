@@ -234,18 +234,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 180);
   });
 
-  btnSkipVideo.addEventListener('click', () => {
-    introVideo.pause();
-    showView('induction');
+  introVideo.addEventListener('click', () => {
+    if (btnPlayPause) btnPlayPause.click();
   });
+
+  if (btnSkipVideo) {
+    btnSkipVideo.addEventListener('click', () => {
+      introVideo.pause();
+      showView('induction');
+    });
+  }
+
+  // Attempt autoplay immediately
+  const playPromise = introVideo.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      if (btnPlayPause) {
+        btnPlayPause.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+      }
+    }).catch(() => {
+      // Browser blocked unmuted autoplay; fallback to muted autoplay
+      introVideo.muted = true;
+      introVideo.play().then(() => {
+        if (btnPlayPause) {
+          btnPlayPause.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+        }
+      }).catch(() => {});
+    });
+  }
+
+  // Unmute on first interaction
+  document.addEventListener('click', () => {
+    if (introVideo.muted) {
+      introVideo.muted = false;
+    }
+  }, { once: true });
 
   // ==========================================
   // 5. CINEMATIC BACKGROUND MOVEMENT & 3D PARALLAX
   // ==========================================
   const backdrop = document.querySelector('.event-horizon-backdrop');
   const inductionContent = document.querySelector('.induction-content');
-  const hudFlankLeft = document.querySelector('.hud-flank-left');
-  const hudFlankRight = document.querySelector('.hud-flank-right');
 
   window.addEventListener('mousemove', (e) => {
     // Normalized between -1 and 1 from center
@@ -296,13 +325,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const textX = currentX * 0.16;
       const textY = currentY * 0.16;
       inductionContent.style.transform = `translate3d(${textX.toFixed(2)}px, ${textY.toFixed(2)}px, 0)`;
-    }
-
-    if (hudFlankLeft) {
-      hudFlankLeft.style.transform = `translate3d(${(-currentX * 0.22).toFixed(2)}px, calc(-50% + ${(-currentY * 0.22).toFixed(2)}px), 0)`;
-    }
-    if (hudFlankRight) {
-      hudFlankRight.style.transform = `translate3d(${(-currentX * 0.22).toFixed(2)}px, calc(-50% + ${(-currentY * 0.22).toFixed(2)}px), 0)`;
     }
 
     requestAnimationFrame(animateCosmicMotion);

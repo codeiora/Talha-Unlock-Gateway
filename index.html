@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Unlock Gateway // Protocol 2810</title>
 
-  <!-- Google Fonts: Eater, Mansalva, Henny Penny, Mystery Quest, Macondo, Almendra -->
+  <!-- Google Fonts: Eater, Mansalva, Henny Penny, Mystery Quest, Macondo, Almendra, Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400&family=Eater&family=Henny+Penny&family=Macondo&family=Mansalva&family=Mystery+Quest&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400&family=Eater&family=Henny+Penny&family=Macondo&family=Mansalva&family=Mystery+Quest&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -57,10 +57,9 @@
        ======================================================== -->
   <section id="view-video" class="scene active">
     <div class="video-container">
-      <div class="video-overlay-glow"></div>
-      
-      <!-- Video Element: Looks for assets/intro.mp4 -->
-      <video id="intro-video" playsinline preload="auto">
+      <!-- Video Element: Galaxy Transmission Video -->
+      <video id="intro-video" playsinline preload="auto" autoplay>
+        <source src="assets/galaxy.mp4" type="video/mp4">
         <source src="assets/intro.mp4" type="video/mp4">
         Your browser does not support the video tag.
       </video>
@@ -69,7 +68,7 @@
       <div id="video-fallback" class="video-fallback">
         <div class="radar-pulse"></div>
         <p class="fallback-tag">[ TRANSMISSION READY ]</p>
-        <p class="fallback-text">Waiting for video stream: <code>assets/intro.mp4</code></p>
+        <p class="fallback-text">Waiting for video stream: <code>assets/galaxy.mp4</code></p>
         <button id="btn-simulate-video" class="btn-ghost">Simulate Video Playback</button>
       </div>
 
@@ -81,9 +80,6 @@
         <div class="video-progress-bar">
           <div id="video-progress" class="video-progress"></div>
         </div>
-        <button id="btn-skip-video" class="btn-skip" title="Skip to Induction">
-          Skip Transmission ➔
-        </button>
       </div>
     </div>
 
@@ -117,61 +113,6 @@
     <div class="side-nebula nebula-left" aria-hidden="true"></div>
     <div class="side-nebula nebula-right" aria-hidden="true"></div>
 
-    <!-- Subtle Sci-Fi Lateral HUD Grids & Coordinate Telemetry -->
-    <div class="hud-grid-flank hud-flank-left" aria-hidden="true">
-      <div class="hud-marker top-marker">
-        <span class="hud-crosshair">+</span>
-        <span class="hud-tag">SEC 28 // 10.A</span>
-      </div>
-      <div class="hud-ruler">
-        <div class="hud-ruler-line"></div>
-        <div class="hud-tick-group">
-          <span class="hud-tick major"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick major"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick major"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick major"></span>
-        </div>
-        <div class="hud-beacon"></div>
-      </div>
-      <div class="hud-marker bottom-marker">
-        <span class="hud-crosshair">+</span>
-        <span class="hud-tag">Q-FLUX 9.806</span>
-      </div>
-    </div>
-
-    <div class="hud-grid-flank hud-flank-right" aria-hidden="true">
-      <div class="hud-marker top-marker">
-        <span class="hud-crosshair">+</span>
-        <span class="hud-tag">GRID // 42°N</span>
-      </div>
-      <div class="hud-ruler">
-        <div class="hud-ruler-line"></div>
-        <div class="hud-tick-group">
-          <span class="hud-tick major"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick major"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick major"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick minor"></span>
-          <span class="hud-tick major"></span>
-        </div>
-        <div class="hud-beacon"></div>
-      </div>
-      <div class="hud-marker bottom-marker">
-        <span class="hud-crosshair">+</span>
-        <span class="hud-tag">SYNC // 1420MHz</span>
-      </div>
-    </div>
-
     <div class="induction-content">
       <div class="protocol-badge">
         <span class="pulse-dot"></span>
@@ -181,15 +122,14 @@
       <!-- The Grand Name: TALHA in Eater Font with Intense Golden Aura Glow -->
       <h1 class="talha-title">TALHA</h1>
 
-      <!-- Curious & Philosophical Induction Message -->
+      <!-- Curious & Philosophical Induction Message (Simple & Fluent) -->
       <div class="induction-card">
-        <p class="curious-lead">Certain gateways across the cosmos remain sealed to the wandering eye.</p>
+        <p class="curious-lead">Some secrets in the universe open only to those who look closely.</p>
         <p class="curious-body">
-          They respond only to a mind tuned to a precise harmonic frequency. 
-          Before you lies an encrypted anomaly—its core is locked behind the fundamental laws of gravity, motion, and quantum resonance.
+          Before you lies a mysterious locked gateway. To unlock its secrets, you must use logic, observation, and the fundamental laws of nature.
         </p>
         <p class="curious-quote">
-          “The truth does not shout; it hides within the symmetries of the universe. Align the coordinates, and what is kept in the dark shall reveal itself.”
+          “The truth is not hidden; it simply waits for the right mind to find it. Solve the patterns, and the gateway will open.”
         </p>
       </div>
 

@@ -57,7 +57,7 @@
       <span class="badge-marks" id="badge-marks">MARKS: 0.00 / 10.00</span>
       <span class="badge-seals" id="badge-seals">SEALS ENGAGED: 0 / 4</span>
       <!-- Ambient Sound & SFX Audio Toggle Inside Header -->
-      <button id="audio-toggle" class="audio-toggle header-audio" aria-label="Toggle Sound">
+      <button id="audio-toggle" class="audio-toggle header-audio" aria-label="Toggle Sound" title="Toggle Sound">
         <svg id="sound-icon-on" class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -67,7 +67,6 @@
           <line x1="23" y1="9" x2="17" y2="15"></line>
           <line x1="17" y1="9" x2="23" y2="15"></line>
         </svg>
-        <span class="audio-label">AUDIO SFX</span>
       </button>
     </div>
   </header>
@@ -1117,15 +1116,6 @@
             <div id="master-feedback" class="master-feedback"></div>
           </div>
 
-          <!-- ================= DEV / PREVIEW SKIP BUTTON ================= -->
-          <div class="dev-skip-container">
-            <button id="btn-skip-dev" class="btn-dev-skip" title="Preview Final Gateway Breach">
-              <span class="skip-bolt">⚡</span>
-              <span>[DEV PREVIEW] Skip & Breach Gateway (Test Mode)</span>
-              <span class="skip-arrow">➔</span>
-            </button>
-          </div>
-
         </div>
       </section>
 
@@ -1135,12 +1125,92 @@
   <!-- ========================================================
        BREACH OVERLAY / FINAL PORTAL (REVEALED ON SOLVING 2810)
        ======================================================== -->
-  <div id="breach-modal" class="breach-modal hidden">
+  <div id="breach-modal" class="breach-modal hidden lockout-mode">
     <!-- Close Preview Button for testing -->
     <button id="btn-close-breach" class="btn-close-breach" title="Close Preview">✕</button>
     <div class="event-horizon-backdrop breach-version" style="background-image: url('assets/event-horizon.png');"></div>
     <div class="breach-burst-light"></div>
-    <div class="breach-content">
+
+    <!-- ========================================================
+         PRANK SCREEN: AI DETECTED & 48-HOUR RESTRICTION LOCKOUT
+         (COZY CELESTIAL AMBIANCE & 100% ENGLISH TRANSMISSION)
+         ======================================================== -->
+    <div id="prank-lockout-content" class="breach-content prank-lockout-content">
+      <div class="breach-badge">
+        <span class="pulse-dot golden"></span>
+        <span>SYNTHETIC FREQUENCY DETECTED // PROTOCOL 2810</span>
+      </div>
+
+      <h1 class="breach-title">THE VEIL REMAINS</h1>
+
+      <p class="breach-message compact-message">
+        An artificial intelligence signature was detected within your calculations.<br>
+        The quantum door responds only to human observation—access has been deferred.
+      </p>
+
+      <div class="cozy-restriction-badge">
+        <span class="pulse-dot golden"></span>
+        <span>48-HOUR CELESTIAL RECALIBRATION IN EFFECT</span>
+      </div>
+
+      <!-- Live 48-Hour Digital Countdown Clock (Warm Amber & Gold) -->
+      <div class="lockout-timer-widget">
+        <div class="digital-clock" id="digital-clock">
+          <div class="clock-unit">
+            <span class="clock-val" id="timer-hours">48</span>
+            <span class="clock-lbl">HOURS</span>
+          </div>
+          <span class="clock-sep">:</span>
+          <div class="clock-unit">
+            <span class="clock-val" id="timer-minutes">00</span>
+            <span class="clock-lbl">MINUTES</span>
+          </div>
+          <span class="clock-sep">:</span>
+          <div class="clock-unit">
+            <span class="clock-val" id="timer-seconds">00</span>
+            <span class="clock-lbl">SECONDS</span>
+          </div>
+        </div>
+        <div class="timer-progress-track">
+          <div class="timer-progress-fill" id="timer-progress-fill"></div>
+        </div>
+      </div>
+
+      <p class="breach-tagline">
+        Patience is the final coordinate. The stars will wait for you.
+      </p>
+
+      <!-- Restricted / Locked Button (Cozy Amber Glow) -->
+      <div class="lockout-btn-wrapper">
+        <button id="btn-restricted-locked" class="btn-portal btn-restricted-cozy" title="Access Deferred: Cooldown Active">
+          <span class="btn-portal-glow"></span>
+          <span class="btn-portal-text">SANCTUARY SEALED (COOLDOWN ACTIVE)</span>
+          <span class="btn-lock-symbol">🔒</span>
+        </button>
+        <p id="lockout-click-warning" class="lockout-click-warning hidden">✦ Celestial coordinates are settling. Cooldown is active.</p>
+      </div>
+
+      <!-- Navigation Options to Return & Re-examine -->
+      <div class="lockout-nav-options">
+        <button id="btn-revisit-codex" class="btn-ghost-lockout" title="Return to Codex Chambers">
+          <span>← Re-examine Equations</span>
+        </button>
+        <a href="index.html" class="btn-ghost-lockout" title="Replay Video Transmission">
+          <span>Replay Transmission ↺</span>
+        </a>
+      </div>
+
+      <p class="breach-footer-note">Protocol 2810 • Frequency Recalibration • Observer: TALHA</p>
+
+      <!-- Secret Creator Toggle: Allows Fariya to switch between Prank and Real Sanctuary -->
+      <button id="btn-secret-toggle" class="btn-secret-toggle" title="Creator Switch (Secret)">✦</button>
+    </div>
+
+    <!-- ========================================================
+         ORIGINAL SANCTUARY REVEAL (HIDDEN - PRESERVED 100%)
+         DO NOT DELETE - KEPT INTACT FOR LATER REVEAL
+         ======================================================== -->
+    <div id="real-breach-content" class="breach-content real-breach-content" style="display: none;">
       <div class="breach-badge">
         <span class="pulse-dot golden"></span>
         <span>GATEWAY OPENED // COORDINATES CONVERGED</span>

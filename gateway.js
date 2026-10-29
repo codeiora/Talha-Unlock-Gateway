@@ -107,6 +107,28 @@ document.addEventListener('DOMContentLoaded', () => {
     osc.stop(now + 0.25);
   }
 
+  function playCosmicRecalibrationSound() {
+    if (!audioEnabled) return;
+    initAudio();
+    const now = audioCtx.currentTime;
+
+    // Warm deep gong / resonant harmonic tone (mysterious, cozy, celestial)
+    const baseFreq = 216; // Harmonic cosmic frequency
+    [baseFreq, baseFreq * 1.5, baseFreq * 2].forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.98, now + 1.6);
+      gain.gain.setValueAtTime(0.2, now + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now + idx * 0.08);
+      osc.stop(now + 1.6);
+    });
+  }
+
   function playPortalBreachSound() {
     if (!audioEnabled) return;
     initAudio();
@@ -460,13 +482,200 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 4. MASTER VAULT DECRYPTION (THE 2810 KEY)
+  // 4. MASTER VAULT DECRYPTION (THE 2810 KEY) & PRANK LOCKOUT
   // ==========================================
   const masterPasscode = document.getElementById('master-passcode');
   const btnUnlockMaster = document.getElementById('btn-unlock-master');
   const masterFeedback = document.getElementById('master-feedback');
   const coreLight = document.getElementById('core-light');
   const breachModal = document.getElementById('breach-modal');
+  const prankLockoutContent = document.getElementById('prank-lockout-content');
+  const realBreachContent = document.getElementById('real-breach-content');
+  const btnRestrictedLocked = document.getElementById('btn-restricted-locked');
+  const lockoutClickWarning = document.getElementById('lockout-click-warning');
+  const btnSecretToggle = document.getElementById('btn-secret-toggle');
+  const btnRevisitCodex = document.getElementById('btn-revisit-codex');
+  const timerHours = document.getElementById('timer-hours');
+  const timerMinutes = document.getElementById('timer-minutes');
+  const timerSeconds = document.getElementById('timer-seconds');
+  const timerProgressFill = document.getElementById('timer-progress-fill');
+
+  const LOCKOUT_KEY = 'talha_gateway_lockout_active';
+  // Clear old testing timestamp so lockout countdown starts completely fresh at 48:00:00
+  localStorage.removeItem('talha_lockout_timestamp');
+  const LOCKOUT_HOURS = 48;
+  const LOCKOUT_DURATION_MS = LOCKOUT_HOURS * 60 * 60 * 1000;
+  let countdownInterval = null;
+  let isPrankActive = true;
+
+  function getRemainingLockoutMs() {
+    const startTime = localStorage.getItem(LOCKOUT_KEY);
+    if (!startTime) return LOCKOUT_DURATION_MS;
+    const targetEnd = parseInt(startTime, 10) + LOCKOUT_DURATION_MS;
+    return targetEnd - Date.now();
+  }
+
+  function isLockoutCompleted() {
+    const startTime = localStorage.getItem(LOCKOUT_KEY);
+    if (!startTime) return false;
+    return getRemainingLockoutMs() <= 0;
+  }
+
+  function initCountdownTimer() {
+    // Only set startTime if it hasn't been set before (first unlock preserved permanently)
+    let startTime = localStorage.getItem(LOCKOUT_KEY);
+    if (!startTime) {
+      startTime = Date.now().toString();
+      localStorage.setItem(LOCKOUT_KEY, startTime);
+    }
+
+    const endTime = parseInt(startTime, 10) + LOCKOUT_DURATION_MS;
+
+    function tick() {
+      const now = Date.now();
+      const diff = endTime - now;
+
+      if (diff <= 0) {
+        if (timerHours) timerHours.textContent = '00';
+        if (timerMinutes) timerMinutes.textContent = '00';
+        if (timerSeconds) timerSeconds.textContent = '00';
+        if (timerProgressFill) timerProgressFill.style.width = '0%';
+        if (countdownInterval) clearInterval(countdownInterval);
+
+        // 48 hours have finished! Grant access to the Real Sanctuary!
+        isPrankActive = false;
+        showRealSanctuaryView();
+        return;
+      }
+
+      const totalSec = Math.floor(diff / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+
+      if (timerHours) timerHours.textContent = String(h).padStart(2, '0');
+      if (timerMinutes) timerMinutes.textContent = String(m).padStart(2, '0');
+      if (timerSeconds) timerSeconds.textContent = String(s).padStart(2, '0');
+
+      const pct = Math.max(0, Math.min(100, (diff / LOCKOUT_DURATION_MS) * 100));
+      if (timerProgressFill) timerProgressFill.style.width = pct + '%';
+    }
+
+    tick();
+    if (countdownInterval) clearInterval(countdownInterval);
+    countdownInterval = setInterval(tick, 1000);
+  }
+
+  function showPrankView() {
+    if (breachModal) {
+      breachModal.classList.add('lockout-mode');
+    }
+    if (prankLockoutContent) prankLockoutContent.style.display = 'flex';
+    if (realBreachContent) realBreachContent.style.display = 'none';
+    initCountdownTimer();
+  }
+
+  function showRealSanctuaryView() {
+    if (breachModal) {
+      breachModal.classList.remove('lockout-mode');
+    }
+    if (prankLockoutContent) prankLockoutContent.style.display = 'none';
+    if (realBreachContent) realBreachContent.style.display = 'flex';
+    playPortalBreachSound();
+  }
+
+  function toggleSanctuaryView() {
+    isPrankActive = !isPrankActive;
+    if (isPrankActive) {
+      showPrankView();
+      playCosmicRecalibrationSound();
+    } else {
+      showRealSanctuaryView();
+    }
+  }
+
+  function triggerBreachReveal() {
+    if (!breachModal) return;
+    breachModal.classList.remove('hidden');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Check if the 48 hours have passed
+    if (isLockoutCompleted()) {
+      // Cooldown complete! Direct access granted to Sanctuary!
+      isPrankActive = false;
+      showRealSanctuaryView();
+    } else {
+      // Still under restriction: show prank with elapsed time remaining
+      isPrankActive = true;
+      showPrankView();
+      playCosmicRecalibrationSound();
+    }
+  }
+
+  function closeBreachModal() {
+    if (!breachModal) return;
+    breachModal.classList.add('hidden');
+    // Re-enable master passcode so observer can re-solve or re-test
+    if (masterPasscode) masterPasscode.disabled = false;
+    if (btnUnlockMaster) btnUnlockMaster.disabled = false;
+  }
+
+  if (btnSecretToggle) {
+    btnSecretToggle.addEventListener('click', toggleSanctuaryView);
+  }
+
+  if (btnRestrictedLocked) {
+    btnRestrictedLocked.addEventListener('click', () => {
+      playChime(329.63, 0.28);
+      btnRestrictedLocked.classList.remove('btn-shake');
+      void btnRestrictedLocked.offsetWidth;
+      btnRestrictedLocked.classList.add('btn-shake');
+
+      if (lockoutClickWarning) {
+        lockoutClickWarning.classList.remove('hidden');
+        setTimeout(() => {
+          lockoutClickWarning.classList.add('hidden');
+        }, 3400);
+      }
+    });
+  }
+
+  if (btnRevisitCodex) {
+    btnRevisitCodex.addEventListener('click', () => {
+      closeBreachModal();
+      const codexSection = document.querySelector('.notebook-wrapper') || document.querySelector('.gateway-main');
+      if (codexSection) {
+        codexSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  }
+
+  // Global console helpers for testing and controls
+  window.revealRealSanctuary = showRealSanctuaryView;
+  window.showPrankGateway = showPrankView;
+  window.togglePrankMode = toggleSanctuaryView;
+
+  // Simulate passing time (e.g. simulateHoursPassed(1) or simulateHoursPassed(48))
+  window.simulateHoursPassed = function(hours) {
+    let startTime = localStorage.getItem(LOCKOUT_KEY);
+    if (!startTime) {
+      startTime = Date.now().toString();
+    }
+    const newStart = parseInt(startTime, 10) - (hours * 60 * 60 * 1000);
+    localStorage.setItem(LOCKOUT_KEY, newStart.toString());
+    initCountdownTimer();
+    console.log(`✦ Simulated ${hours} hours passed. Time remaining updated!`);
+    if (getRemainingLockoutMs() <= 0) {
+      console.log('✦ 48 hours completed! System automatically reveals Sanctuary.');
+      showRealSanctuaryView();
+    }
+  };
+
+  window.resetLockoutTimer = function() {
+    localStorage.removeItem(LOCKOUT_KEY);
+    initCountdownTimer();
+    console.log('✦ 48-Hour Timer reset to fresh 48:00:00.');
+  };
 
   masterPasscode.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
@@ -478,8 +687,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const val = masterPasscode.value.trim();
 
     if (val === '2810') {
-      masterFeedback.textContent = '✦ MASTER FREQUENCY ACCEPTED: 2810. COLLAPSING BARRIERS...';
-      masterFeedback.style.color = '#34d399';
+      if (isLockoutCompleted()) {
+        masterFeedback.textContent = '✦ 48-HR RESTRICTION EXPIRED. FREQUENCY 2810 ACCEPTED! COLLAPSING THE VEIL...';
+        masterFeedback.style.color = '#34d399';
+      } else {
+        masterFeedback.textContent = '✦ MASTER FREQUENCY ACCEPTED: 2810. SCANNING OBSERVATION RECORD...';
+        masterFeedback.style.color = '#34d399';
+      }
       masterPasscode.disabled = true;
       btnUnlockMaster.disabled = true;
 
@@ -491,8 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Trigger Grand Breach Modal / Overlay
       setTimeout(() => {
-        breachModal.classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        triggerBreachReveal();
       }, 1500);
 
     } else {
@@ -506,63 +719,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // ==========================================
-  // 5. DEV / TEST BYPASS (AUTO-SOLVE & PREVIEW BREACH)
-  // ==========================================
-  const btnSkipDev = document.getElementById('btn-skip-dev');
   const btnCloseBreach = document.getElementById('btn-close-breach');
-
-  if (btnSkipDev) {
-    btnSkipDev.addEventListener('click', () => {
-      // 1. Mark all 28 puzzles as solved and populate fields
-      for (let i = 1; i <= 28; i++) {
-        solvedPuzzles.add(i);
-        const card = document.getElementById(`card-${i}`);
-        const badge = document.getElementById(`badge-${i}`);
-        const inp = document.getElementById(`input-${i}`);
-        const btn = card ? card.querySelector('.btn-verify') : null;
-        const config = puzzleConfigs[i];
-
-        if (card) card.classList.add('solved');
-        if (badge) badge.textContent = 'SEAL ALIGNED';
-        if (inp && config) {
-          inp.value = config.expected[0];
-          inp.disabled = true;
-        }
-        if (btn) {
-          btn.disabled = true;
-          btn.textContent = 'ALIGNED ✓';
-        }
-      }
-
-      // 2. Unlock all 4 sectors and Stargate SVG rings
-      [1, 2, 3, 4].forEach(sec => {
-        updateSectorProgress(sec);
-      });
-
-      // 3. Update overall progress & marks
-      updateOverallProgress();
-
-      // 4. Fill master passcode
-      if (masterPasscode) masterPasscode.value = '2810';
-
-      // 5. Activate Core Light & Trigger Portal Sound
-      coreLight.classList.remove('core-locked');
-      coreLight.classList.add('core-unlocked');
-      playPortalBreachSound();
-
-      // 6. Reveal Breach Modal
-      setTimeout(() => {
-        breachModal.classList.remove('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 500);
-    });
-  }
-
   if (btnCloseBreach) {
-    btnCloseBreach.addEventListener('click', () => {
-      breachModal.classList.add('hidden');
-    });
+    btnCloseBreach.addEventListener('click', closeBreachModal);
   }
 
   // ==========================================
