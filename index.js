@@ -191,19 +191,21 @@ document.addEventListener('DOMContentLoaded', () => {
     videoFallback.classList.remove('hidden');
   });
 
-  btnPlayPause.addEventListener('click', () => {
-    initAudio();
-    if (introVideo.paused) {
-      introVideo.play().catch(() => {});
-      btnPlayPause.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
-    } else {
-      introVideo.pause();
-      btnPlayPause.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
-    }
-  });
+  if (btnPlayPause) {
+    btnPlayPause.addEventListener('click', () => {
+      initAudio();
+      if (introVideo.paused) {
+        introVideo.play().catch(() => {});
+        btnPlayPause.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+      } else {
+        introVideo.pause();
+        btnPlayPause.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+      }
+    });
+  }
 
   introVideo.addEventListener('timeupdate', () => {
-    if (introVideo.duration) {
+    if (introVideo.duration && videoProgress) {
       const pct = (introVideo.currentTime / introVideo.duration) * 100;
       videoProgress.style.width = `${pct}%`;
     }
@@ -219,23 +221,30 @@ document.addEventListener('DOMContentLoaded', () => {
     playChime(587.33, 0.4);
   }
 
-  btnSimulateVideo.addEventListener('click', () => {
-    let p = 0;
-    btnSimulateVideo.disabled = true;
-    btnSimulateVideo.textContent = 'Simulating Stream...';
-    const interval = setInterval(() => {
-      p += 12;
-      videoProgress.style.width = `${p}%`;
-      if (p >= 100) {
-        clearInterval(interval);
-        btnSimulateVideo.textContent = 'Stream Completed';
-        revealMoveForward();
-      }
-    }, 180);
-  });
+  if (btnSimulateVideo) {
+    btnSimulateVideo.addEventListener('click', () => {
+      let p = 0;
+      btnSimulateVideo.disabled = true;
+      btnSimulateVideo.textContent = 'Simulating Stream...';
+      const interval = setInterval(() => {
+        p += 12;
+        if (videoProgress) videoProgress.style.width = `${p}%`;
+        if (p >= 100) {
+          clearInterval(interval);
+          btnSimulateVideo.textContent = 'Stream Completed';
+          revealMoveForward();
+        }
+      }, 180);
+    });
+  }
 
   introVideo.addEventListener('click', () => {
-    if (btnPlayPause) btnPlayPause.click();
+    initAudio();
+    if (introVideo.paused) {
+      introVideo.play().catch(() => {});
+    } else {
+      introVideo.pause();
+    }
   });
 
   if (btnSkipVideo) {
