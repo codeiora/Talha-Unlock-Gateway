@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Gateway // The Observer's Codex</title>
+
+  <!-- Google Fonts: Eater, Mansalva, Henny Penny, Mystery Quest, Macondo, Almendra -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&family=Eater&family=Henny+Penny&family=Macondo&family=Mansalva&family=Mystery+Quest&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-gateway-body">
+
+  <!-- ========================================================
+       SCREEN GUARD (DESKTOP & LAPTOP ONLY)
+       ======================================================== -->
+  <div id="screen-guard" class="screen-guard">
+    <div class="guard-card">
+      <div class="guard-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      </div>
+      <div class="guard-tag">[ DESKTOP FREQUENCY REQUIRED ]</div>
+      <h2 class="guard-title">Open in your PC or Laptop</h2>
+      <p class="guard-desc">
+        This transmission contains multi-dimensional coordinate grids and quantum calculations engineered exclusively for a widescreen display.
+      </p>
+      <p class="guard-sub">Please switch to your computer or laptop to access the gateway.</p>
+    </div>
+  </div>
+
+  <!-- Background Canvas for Atmospheric Starfield & Nebulae -->
+  <canvas id="cosmic-canvas"></canvas>
+
+  <!-- ========================================================
+       TOP SYSTEM HEADER WITH BACK NAVIGATION (STICKY)
+       ======================================================== -->
+  <header class="gateway-header">
+    <div class="header-left">
+      <a href="index.html" class="btn-back-nav">
+        <span>← Back to Transmission</span>
+      </a>
+      <span class="system-divider">|</span>
+      <div class="header-directive">
+        <span class="directive-tag"><span class="target-glyph">✦</span> TALHA</span>
+        <span class="directive-sep">//</span>
+        <span class="directive-text">Solve these cosmic problems to unlock the gateway</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <span class="badge-marks" id="badge-marks">MARKS: 0.00 / 10.00</span>
+      <span class="badge-seals" id="badge-seals">SEALS ENGAGED: 0 / 4</span>
+      <!-- Ambient Sound & SFX Audio Toggle Inside Header -->
+      <button id="audio-toggle" class="audio-toggle header-audio" aria-label="Toggle Sound">
+        <svg id="sound-icon-on" class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+        <svg id="sound-icon-off" class="sound-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+        <span class="audio-label">AUDIO SFX</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================
+       MAIN SPLIT-SCREEN LAYOUT
+       ======================================================== -->
+  <main class="gateway-main">
+    <div class="split-layout">
+      
+      <!-- ================= LEFT PANE: THE STICKY VISUAL STARGATE LOCK ================= -->
+      <aside class="left-pane" id="sticky-left-pane">
+        <div class="lock-visual-wrapper">
+          
+          <div class="stargate-stage">
+            <!-- Swirling Painted Galaxy Vortex in Core -->
+            <div class="vortex-frame">
+              <img src="assets/cosmic-vortex.jpg" alt="Cosmic Vortex" id="vortex-art" class="vortex-art">
+              <div class="vortex-mask-vignette"></div>
+              <div class="stargate-glass-sheen"></div>
+            </div>
+
+            <!-- Concentric Stargate / Orbital Dial SVG overlaid on top -->
+            <svg id="stargate-svg" class="stargate-svg" viewBox="0 0 600 600">
+              <defs>
+                <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.95" />
+                  <stop offset="40%" stop-color="#d97706" stop-opacity="0.6" />
+                  <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0" />
+                </radialGradient>
+              </defs>
+
+              <!-- Outer Celestial Coordinate Ring (Clean Solid Rings - No Dotted Lines) -->
+              <circle cx="300" cy="300" r="270" class="ring-track-outer" />
+              <circle cx="300" cy="300" r="264" class="ring-track" />
+
+              <!-- Ring 1: Cosmic Expansion (Hubble) -->
+              <g id="ring-1" class="stargate-ring ring-dormant" data-ring="1">
+                <circle cx="300" cy="300" r="230" class="ring-path" />
+                <circle cx="300" cy="300" r="230" class="ring-progress" stroke-dasharray="1445" stroke-dashoffset="1445" />
+              </g>
+
+              <!-- Ring 2: Orbital Centripetal Dynamics -->
+              <g id="ring-2" class="stargate-ring ring-dormant" data-ring="2">
+                <circle cx="300" cy="300" r="180" class="ring-path" />
+                <circle cx="300" cy="300" r="180" class="ring-progress" stroke-dasharray="1131" stroke-dashoffset="1131" />
+                <polygon points="300,120 455,390 145,390" class="ring-geometry" />
+              </g>
+
+              <!-- Ring 3: Quantum Flux Lattice -->
+              <g id="ring-3" class="stargate-ring ring-dormant" data-ring="3">
+                <circle cx="300" cy="300" r="130" class="ring-path" />
+                <circle cx="300" cy="300" r="130" class="ring-progress" stroke-dasharray="816" stroke-dashoffset="816" />
+                <rect x="208" y="208" width="184" height="184" class="ring-geometry square-geom" />
+              </g>
+
+              <!-- Ring 4 / Core: Resonance Dial -->
+              <g id="ring-4" class="stargate-ring ring-dormant" data-ring="4">
+                <circle cx="300" cy="300" r="80" class="ring-path" />
+                <circle cx="300" cy="300" r="80" class="ring-progress" stroke-dasharray="502" stroke-dashoffset="502" />
+              </g>
+
+              <!-- Central Core Vault Gate -->
+              <circle id="core-light" cx="300" cy="300" r="50" class="core-locked" />
+              <g id="core-icon" class="core-icon">
+                <circle cx="300" cy="300" r="18" fill="none" stroke="#f59e0b" stroke-width="2.5" />
+                <line x1="300" y1="285" x2="300" y2="315" stroke="#f59e0b" stroke-width="2.5" />
+                <line x1="285" y1="300" x2="315" y2="300" stroke="#f59e0b" stroke-width="2.5" />
+              </g>
+            </svg>
+          </div>
+
+          <!-- Dynamic Readout Below Lock -->
+          <div class="lock-readout">
+            <div class="readout-dial">
+              <span class="readout-label">ALIGNMENT INDEX</span>
+              <span id="readout-percent" class="readout-value">0%</span>
+            </div>
+            <div class="readout-status">
+              <p id="readout-text" class="readout-hint">Waiting for input coordinates...</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ================= RIGHT PANE: THE OBSERVER'S NOTEBOOK ================= -->
+      <section class="right-pane">
+        <div class="notebook-wrapper">
+          
+          <!-- SECTION HEADLINE CARD (The Observer's Study Header) -->
+          <div class="notebook-header-card">
+            <div class="notebook-header-top">
+              <div class="notebook-badge">
+                <span class="pulse-dot"></span>
+                <span>DECRYPTION PROTOCOL // 4 SECTORS • 28 CHAMBERS</span>
+              </div>
+              <div class="header-actions">
+                <span class="codex-tag">FREQUENCY 28-10</span>
+                <button id="btn-inspect-desk" class="btn-inspect-desk" title="Inspect Observer's Study & Field Notes">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                  <span>Inspect Study</span>
+                </button>
+              </div>
+            </div>
+            <h2 class="notebook-title">The Observer's Codex</h2>
+            <p class="notebook-subtitle">
+              Solve the 28 cosmic equations across 4 astrophysical sectors to accumulate 10.00 marks.
+              Notice how the fundamental laws across every corner of the cosmos collapse onto variations of <strong>28-10</strong>.
+            </p>
+            <div class="codex-inscription-bar">
+              <span class="inscription-quote">“Same sky. Different place. Same dream.”</span>
+              <span class="inscription-glyph">✦</span>
+            </div>
+          </div>
+
+          <!-- SECTOR NAVIGATION TABS -->
+          <div class="sector-nav-container">
+            <div class="sector-tabs" role="tablist">
+              <button class="sector-tab active" data-sector="1" role="tab" id="tab-sector-1">
+                <span class="sector-tab-num">SECTOR 01</span>
+                <span class="sector-tab-title">Orbital Mechanics</span>
+                <div class="sector-tab-footer">
+                  <span class="sector-tab-badge" id="sector-badge-1">0 / 7</span>
+                  <span class="sector-tab-mark">2.50 MARKS</span>
+                </div>
+              </button>
+              <button class="sector-tab" data-sector="2" role="tab" id="tab-sector-2">
+                <span class="sector-tab-num">SECTOR 02</span>
+                <span class="sector-tab-title">Stellar & Black Holes</span>
+                <div class="sector-tab-footer">
+                  <span class="sector-tab-badge" id="sector-badge-2">0 / 7</span>
+                  <span class="sector-tab-mark">2.50 MARKS</span>
+                </div>
+              </button>
+              <button class="sector-tab" data-sector="3" role="tab" id="tab-sector-3">
+                <span class="sector-tab-num">SECTOR 03</span>
+                <span class="sector-tab-title">Galaxies & Deep Space</span>
+                <div class="sector-tab-footer">
+                  <span class="sector-tab-badge" id="sector-badge-3">0 / 7</span>
+                  <span class="sector-tab-mark">2.50 MARKS</span>
+                </div>
+              </button>
+              <button class="sector-tab" data-sector="4" role="tab" id="tab-sector-4">
+                <span class="sector-tab-num">SECTOR 04</span>
+                <span class="sector-tab-title">Relativity & Spacetime</span>
+                <div class="sector-tab-footer">
+                  <span class="sector-tab-badge" id="sector-badge-4">0 / 7</span>
+                  <span class="sector-tab-mark">2.50 MARKS</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= SECTOR 1: ORBITAL MECHANICS (CARDS 1 - 7) ================= -->
+          <div class="sector-panel active" id="sector-panel-1">
+            <div class="sector-intro-bar">
+              <span class="sector-intro-tag">SECTOR 01 // ORBITAL MECHANICS & PLANETARY DYNAMICS</span>
+              <span class="sector-intro-desc">7 Cosmic Chambers • Ring 1 Resonance</span>
+            </div>
+            <div class="puzzle-stack">
+
+              <!-- PUZZLE 1 -->
+              <div class="puzzle-card" id="card-1">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 01</span>
+                    <h3 class="card-headline">Orbital Circumference Velocity</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-1">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    An automated asteroid survey probe orbits at an orbital circumference of 
+                    <span class="hl">C = 28,100 km</span>. It completes one full revolution in 
+                    <span class="hl">T = 10 hours</span>. Calculate its steady orbital speed in <span class="hl">km/h</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>v = C / T</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-1" placeholder="Enter velocity in km/h..." autocomplete="off">
+                    <span class="unit-tag">km/h</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="1">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-1"></div>
+              </div>
+
+              <!-- PUZZLE 2 -->
+              <div class="puzzle-card" id="card-2">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 02</span>
+                    <h3 class="card-headline">Orbital Centripetal Dynamics</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-2">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    Anchored without drifting, a satellite of mass <span class="hl">m = 56.2 kg</span> traverses a circular orbit 
+                    with radius <span class="hl">r = 200 m</span> at an orbital speed of <span class="hl">v = 10 m/s</span>. 
+                    Calculate the inward centripetal force <span class="hl">F꜀</span> in Newtons (to two decimal places).
+                  </p>
+                  <div class="formula-box">
+                    <code>F꜀ = (m · v²) / r</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-2" placeholder="Enter force (e.g. 00.00)..." autocomplete="off">
+                    <span class="unit-tag">N</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="2">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-2"></div>
+              </div>
+
+              <!-- PUZZLE 3 -->
+              <div class="puzzle-card" id="card-3">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 03</span>
+                    <h3 class="card-headline">Planetary Surface Gravity</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-3">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    An exoplanet core has a gravitational parameter of <span class="hl">GM = 2.810 × 10¹³ m³/s²</span> and an equatorial radius of 
+                    <span class="hl">R = 1.0 × 10⁶ m</span>. Compute its surface gravitational acceleration <span class="hl">g</span> in <span class="hl">m/s²</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>g = (GM) / R²</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-3" placeholder="Enter acceleration in m/s²..." autocomplete="off">
+                    <span class="unit-tag">m/s²</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="3">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-3"></div>
+              </div>
+
+              <!-- PUZZLE 4 -->
+              <div class="puzzle-card" id="card-4">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 04</span>
+                    <h3 class="card-headline">Orbital Revolution Period</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-4">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A reconnaissance probe cruises around a dwarf planet along an orbit of length <span class="hl">C = 56,200 km</span> 
+                    at a steady orbital velocity of <span class="hl">v = 20 km/s</span>. Determine the period <span class="hl">T</span> in seconds.
+                  </p>
+                  <div class="formula-box">
+                    <code>T = C / v</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-4" placeholder="Enter orbital period in seconds..." autocomplete="off">
+                    <span class="unit-tag">s</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="4">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-4"></div>
+              </div>
+
+              <!-- PUZZLE 5 -->
+              <div class="puzzle-card" id="card-5">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 05</span>
+                    <h3 class="card-headline">Hohmann Transfer Velocity Boost</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-5">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    To initiate transfer to an outer orbital band, a spacecraft accelerates from an initial parking speed of 
+                    <span class="hl">v₁ = 7.690 km/s</span> to an injection speed of <span class="hl">v₂ = 10.500 km/s</span>. 
+                    Determine the required velocity boost <span class="hl">Δv</span> in <span class="hl">km/s</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>Δv = v₂ - v₁</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-5" placeholder="Enter velocity boost in km/s..." autocomplete="off">
+                    <span class="unit-tag">km/s</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="5">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-5"></div>
+              </div>
+
+              <!-- PUZZLE 6 -->
+              <div class="puzzle-card" id="card-6">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 06</span>
+                    <h3 class="card-headline">Orbital Eccentricity Ratio</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-6">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    An elliptical planetary orbit has an apastron distance of <span class="hl">rₐ = 1.7804 AU</span> 
+                    and a periastron distance of <span class="hl">rₚ = 1.0000 AU</span>. Calculate its orbital eccentricity 
+                    <span class="hl">e</span> (rounded to 4 decimal places).
+                  </p>
+                  <div class="formula-box">
+                    <code>e = (rₐ - rₚ) / (rₐ + rₚ)</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-6" placeholder="Enter eccentricity (e.g. 0.0000)..." autocomplete="off">
+                    <span class="unit-tag">ratio</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="6">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-6"></div>
+              </div>
+
+              <!-- PUZZLE 7 -->
+              <div class="puzzle-card" id="card-7">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 07</span>
+                    <h3 class="card-headline">Solar Sail Radiation Thrust</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-7">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A photon solar sail reflects an incident beam with total reflected power <span class="hl">P = 4.215 × 10¹¹ W</span>. 
+                    Given the speed of light <span class="hl">c = 3.0 × 10⁸ m/s</span>, calculate the continuous radiation thrust force <span class="hl">F</span> in Newtons.
+                  </p>
+                  <div class="formula-box">
+                    <code>F = (2 · P) / c</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-7" placeholder="Enter thrust in Newtons..." autocomplete="off">
+                    <span class="unit-tag">N</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="7">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-7"></div>
+              </div>
+
+            </div>
+
+            <div class="sector-navigation-controls">
+              <div></div>
+              <button class="btn-nav-sector" data-next-sector="2">
+                <span>Proceed to Sector 02</span>
+                <span class="btn-arrow">➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= SECTOR 2: STELLAR ASTROPHYSICS & BLACK HOLES (CARDS 8 - 14) ================= -->
+          <div class="sector-panel" id="sector-panel-2">
+            <div class="sector-intro-bar">
+              <span class="sector-intro-tag">SECTOR 02 // STELLAR ASTROPHYSICS & BLACK HOLES</span>
+              <span class="sector-intro-desc">7 Cosmic Chambers • Ring 2 Resonance</span>
+            </div>
+            <div class="puzzle-stack">
+
+              <!-- PUZZLE 8 -->
+              <div class="puzzle-card" id="card-8">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 08</span>
+                    <h3 class="card-headline">Schwarzschild Event Horizon</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-8">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A supermassive black hole candidate has a mass of <span class="hl">M = 946.13 M_⊙</span>. 
+                    Using the Schwarzschild proportionality constant <span class="hl">k = 2.97 km/M_⊙</span>, determine its event horizon radius <span class="hl">Rₛ</span> in <span class="hl">km</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>Rₛ = k · M</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-8" placeholder="Enter radius in km..." autocomplete="off">
+                    <span class="unit-tag">km</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="8">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-8"></div>
+              </div>
+
+              <!-- PUZZLE 9 -->
+              <div class="puzzle-card" id="card-9">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 09</span>
+                    <h3 class="card-headline">Stefan-Boltzmann Luminosity Factor</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-9">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A pulsating giant star has expanded to a radius of <span class="hl">R = 5.301 R_⊙</span> 
+                    while maintaining its baseline solar surface temperature (<span class="hl">T = 1.0 T_⊙</span>). 
+                    By what factor has its luminosity increased compared to the Sun? (Round to 2 decimal places).
+                  </p>
+                  <div class="formula-box">
+                    <code>L / L_⊙ = (R / R_⊙)² · (T / T_⊙)⁴</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-9" placeholder="Enter luminosity ratio..." autocomplete="off">
+                    <span class="unit-tag">ratio</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="9">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-9"></div>
+              </div>
+
+              <!-- PUZZLE 10 -->
+              <div class="puzzle-card" id="card-10">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 10</span>
+                    <h3 class="card-headline">Wien's Peak Stellar Wavelength</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-10">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A luminous white star shines with a surface temperature of <span class="hl">T = 10,313 K</span>. 
+                    Given Wien's displacement constant <span class="hl">b = 2.898 × 10⁶ nm·K</span>, compute its peak radiation wavelength <span class="hl">λ_max</span> in nanometers.
+                  </p>
+                  <div class="formula-box">
+                    <code>λ_max = b / T</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-10" placeholder="Enter wavelength in nm..." autocomplete="off">
+                    <span class="unit-tag">nm</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="10">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-10"></div>
+              </div>
+
+              <!-- PUZZLE 11 -->
+              <div class="puzzle-card" id="card-11">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 11</span>
+                    <h3 class="card-headline">Stellar Nuclear Fusion Energy</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-11">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    In a stellar core reaction, an infinitesimal mass of <span class="hl">m = 3.122 × 10⁻¹⁶ kg</span> 
+                    is converted into radiant energy. Taking <span class="hl">c = 3.0 × 10⁸ m/s</span> (<span class="hl">c² = 9.0 × 10¹⁶ m²/s²</span>), 
+                    find the released energy <span class="hl">E</span> in Joules.
+                  </p>
+                  <div class="formula-box">
+                    <code>E = m · c²</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-11" placeholder="Enter energy in Joules..." autocomplete="off">
+                    <span class="unit-tag">J</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="11">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-11"></div>
+              </div>
+
+              <!-- PUZZLE 12 -->
+              <div class="puzzle-card" id="card-12">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 12</span>
+                    <h3 class="card-headline">Neutron Star Gravitational Redshift</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-12">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    An emission line of wavelength <span class="hl">λ₀ = 10.0 nm</span> escapes from the deep gravitational well 
+                    of a neutron star with redshift parameter <span class="hl">z = 0.2810</span>. Calculate the wavelength shift <span class="hl">Δλ</span> in <span class="hl">nm</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>Δλ = z · λ₀</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-12" placeholder="Enter wavelength shift in nm..." autocomplete="off">
+                    <span class="unit-tag">nm</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="12">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-12"></div>
+              </div>
+
+              <!-- PUZZLE 13 -->
+              <div class="puzzle-card" id="card-13">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 13</span>
+                    <h3 class="card-headline">Stellar Radiant Flux Intensity</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-13">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A young open star cluster emits a total radiation power of <span class="hl">L = 3.5312 × 10¹⁴ W</span> 
+                    across an enclosing sphere with total surface area <span class="hl">A = 1.2566 × 10¹¹ m²</span>. Calculate the radiant energy flux <span class="hl">F</span> in <span class="hl">W/m²</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>F = L / A</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-13" placeholder="Enter flux in W/m²..." autocomplete="off">
+                    <span class="unit-tag">W/m²</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="13">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-13"></div>
+              </div>
+
+              <!-- PUZZLE 14 -->
+              <div class="puzzle-card" id="card-14">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 14</span>
+                    <h3 class="card-headline">Pulsar Spin Harmonic Period</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-14">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A magnetized pulsar sweeps its celestial beam at an angular speed of <span class="hl">ω = 2.236 rad/s</span>. 
+                    Determine the exact period of one revolution <span class="hl">T</span> in seconds (taking <span class="hl">π ≈ 3.1416</span>).
+                  </p>
+                  <div class="formula-box">
+                    <code>T = (2π) / ω</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-14" placeholder="Enter period in seconds..." autocomplete="off">
+                    <span class="unit-tag">s</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="14">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-14"></div>
+              </div>
+
+            </div>
+
+            <div class="sector-navigation-controls">
+              <button class="btn-nav-sector btn-nav-prev" data-prev-sector="1">
+                <span class="btn-arrow">←</span>
+                <span>Back to Sector 01</span>
+              </button>
+              <button class="btn-nav-sector" data-next-sector="3">
+                <span>Proceed to Sector 03</span>
+                <span class="btn-arrow">➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= SECTOR 3: GALAXIES & COSMOLOGY (CARDS 15 - 21) ================= -->
+          <div class="sector-panel" id="sector-panel-3">
+            <div class="sector-intro-bar">
+              <span class="sector-intro-tag">SECTOR 03 // DEEP SPACE & COSMIC EXPANSION</span>
+              <span class="sector-intro-desc">7 Cosmic Chambers • Ring 3 Resonance</span>
+            </div>
+            <div class="puzzle-stack">
+
+              <!-- PUZZLE 15 -->
+              <div class="puzzle-card" id="card-15">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 15</span>
+                    <h3 class="card-headline">Galactic Expansion Velocity</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-15">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    The fabric of space stretches relentlessly. A distant cluster lies at an astronomical distance of 
+                    <span class="hl">d = 40.0 Mpc</span>. Given the local Hubble parameter is 
+                    <span class="hl">H₀ = 70.25 km/s/Mpc</span>, what is the recessional velocity of this cluster in <span class="hl">km/s</span>?
+                  </p>
+                  <div class="formula-box">
+                    <code>v = H₀ · d</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-15" placeholder="Enter velocity in km/s..." autocomplete="off">
+                    <span class="unit-tag">km/s</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="15">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-15"></div>
+              </div>
+
+              <!-- PUZZLE 16 -->
+              <div class="puzzle-card" id="card-16">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 16</span>
+                    <h3 class="card-headline">Quasar Cosmological Redshift</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-16">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A Lyman-alpha spectral line from an ancient quasar, originally emitted at <span class="hl">λ₀ = 121.6 nm</span>, 
+                    is observed redshifted to <span class="hl">λ = 463.3 nm</span>. Determine the cosmological redshift parameter <span class="hl">z</span> (to 3 decimal places).
+                  </p>
+                  <div class="formula-box">
+                    <code>z = (λ - λ₀) / λ₀</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-16" placeholder="Enter redshift parameter z..." autocomplete="off">
+                    <span class="unit-tag">z</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="16">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-16"></div>
+              </div>
+
+              <!-- PUZZLE 17 -->
+              <div class="puzzle-card" id="card-17">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 17</span>
+                    <h3 class="card-headline">Standard Candle Distance</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-17">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A Type Ia supernova in a remote galaxy has an observed recessional speed of <span class="hl">v = 1967.0 km/s</span>. 
+                    With Hubble constant <span class="hl">H₀ = 70.0 km/s/Mpc</span>, compute the distance to the host galaxy <span class="hl">d</span> in <span class="hl">Mpc</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>d = v / H₀</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-17" placeholder="Enter distance in Mpc..." autocomplete="off">
+                    <span class="unit-tag">Mpc</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="17">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-17"></div>
+              </div>
+
+              <!-- PUZZLE 18 -->
+              <div class="puzzle-card" id="card-18">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 18</span>
+                    <h3 class="card-headline">Galaxy Cluster Virial Velocity</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-18">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    The gravitational potential energy over mass within a galaxy cluster core is evaluated at 
+                    <span class="hl">Φ = 7.8961 × 10⁶ m²/s²</span>. Calculate the characteristic velocity dispersion <span class="hl">v = √Φ</span> in <span class="hl">m/s</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>v = √Φ</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-18" placeholder="Enter velocity in m/s..." autocomplete="off">
+                    <span class="unit-tag">m/s</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="18">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-18"></div>
+              </div>
+
+              <!-- PUZZLE 19 -->
+              <div class="puzzle-card" id="card-19">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 19</span>
+                    <h3 class="card-headline">Extragalactic Angular Diameter</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-19">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    An elliptical galaxy spans an angular width of <span class="hl">θ = 0.0281 radians</span> 
+                    at an estimated cosmic distance of <span class="hl">d = 1000 kpc</span>. Calculate its actual physical diameter <span class="hl">D</span> in <span class="hl">kpc</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>D = d · θ</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-19" placeholder="Enter diameter in kpc..." autocomplete="off">
+                    <span class="unit-tag">kpc</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="19">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-19"></div>
+              </div>
+
+              <!-- PUZZLE 20 -->
+              <div class="puzzle-card" id="card-20">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 20</span>
+                    <h3 class="card-headline">Cosmic Volume Expansion Factor</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-20">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    Due to the uniform expansion of the metric, the cosmic scale factor has grown by a linear factor of 
+                    <span class="hl">(1 + z) = 1.4111</span>. By what volume factor has a unit cube of space expanded?
+                  </p>
+                  <div class="formula-box">
+                    <code>V / V₀ = (1 + z)³</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-20" placeholder="Enter volume ratio..." autocomplete="off">
+                    <span class="unit-tag">ratio</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="20">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-20"></div>
+              </div>
+
+              <!-- PUZZLE 21 -->
+              <div class="puzzle-card" id="card-21">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 21</span>
+                    <h3 class="card-headline">Relativistic Jet Doppler Boost</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-21">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A relativistic plasma jet beamed towards the observer has a bulk Lorentz factor <span class="hl">Γ = 10.0</span> 
+                    and an effective beaming correction factor <span class="hl">μ = 0.0035587</span>. Calculate the relativistic Doppler factor <span class="hl">δ</span> in the observer frame.
+                  </p>
+                  <div class="formula-box">
+                    <code>δ = 1 / (Γ · μ)</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-21" placeholder="Enter Doppler factor..." autocomplete="off">
+                    <span class="unit-tag">factor</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="21">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-21"></div>
+              </div>
+
+            </div>
+
+            <div class="sector-navigation-controls">
+              <button class="btn-nav-sector btn-nav-prev" data-prev-sector="2">
+                <span class="btn-arrow">←</span>
+                <span>Back to Sector 02</span>
+              </button>
+              <button class="btn-nav-sector" data-next-sector="4">
+                <span>Proceed to Sector 04</span>
+                <span class="btn-arrow">➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= SECTOR 4: RELATIVITY & SPACETIME (CARDS 22 - 28) ================= -->
+          <div class="sector-panel" id="sector-panel-4">
+            <div class="sector-intro-bar">
+              <span class="sector-intro-tag">SECTOR 04 // RELATIVISTIC SPACE-TIME & QUANTUM COSMOS</span>
+              <span class="sector-intro-desc">7 Cosmic Chambers • Ring 4 Resonance & Master Vault</span>
+            </div>
+            <div class="puzzle-stack">
+
+              <!-- PUZZLE 22 -->
+              <div class="puzzle-card" id="card-22">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 22</span>
+                    <h3 class="card-headline">Special Relativity Time Dilation</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-22">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    An astronaut embarks on an interstellar expedition aboard a craft with Lorentz factor <span class="hl">γ = 2.810</span>. 
+                    If the ship chronometer logs exactly <span class="hl">Δt₀ = 10.0 years</span>, how many years <span class="hl">Δt</span> elapse for observers on Earth?
+                  </p>
+                  <div class="formula-box">
+                    <code>Δt = γ · Δt₀</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-22" placeholder="Enter years on Earth..." autocomplete="off">
+                    <span class="unit-tag">years</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="22">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-22"></div>
+              </div>
+
+              <!-- PUZZLE 23 -->
+              <div class="puzzle-card" id="card-23">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 23</span>
+                    <h3 class="card-headline">Relativistic Cosmic Momentum</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-23">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A micro-meteoroid with relativistic effective mass <span class="hl">γm = 281.0 kg</span> cruises past an orbital radar array 
+                    at <span class="hl">v = 10.0 m/s</span>. Compute its relativistic momentum <span class="hl">p</span> in <span class="hl">kg·m/s</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>p = (γ · m) · v</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-23" placeholder="Enter momentum in kg·m/s..." autocomplete="off">
+                    <span class="unit-tag">kg·m/s</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="23">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-23"></div>
+              </div>
+
+              <!-- PUZZLE 24 -->
+              <div class="puzzle-card" id="card-24">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 24</span>
+                    <h3 class="card-headline">Quantum De Broglie Resonance</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-24">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    In the subatomic dance, a particle carries subatomic momentum <span class="hl">p = 2.358 × 10⁻²⁵ kg·m/s</span>. 
+                    Taking Planck's constant <span class="hl">h = 6.626 × 10⁻³⁴ J·s</span>, determine its de Broglie wavelength 
+                    <span class="hl">λ</span> in nanometers (nm), rounded to three decimal places.
+                  </p>
+                  <div class="formula-box">
+                    <code>λ = (h / p) · 10⁹ nm</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-24" placeholder="Enter wavelength in nm..." autocomplete="off">
+                    <span class="unit-tag">nm</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="24">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-24"></div>
+              </div>
+
+              <!-- PUZZLE 25 -->
+              <div class="puzzle-card" id="card-25">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 25</span>
+                    <h3 class="card-headline">Event Horizon Signal Time Stretch</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-25">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A deep-space probe stationed near a gravitational singularity has a time dilation factor of <span class="hl">γ_g = 2.810</span>. 
+                    If the probe transmits an automated diagnostic ping every <span class="hl">Δt₀ = 100.0 seconds</span>, what interval <span class="hl">Δt</span> in seconds elapses between receptions on Earth?
+                  </p>
+                  <div class="formula-box">
+                    <code>Δt = γ_g · Δt₀</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-25" placeholder="Enter interval in seconds..." autocomplete="off">
+                    <span class="unit-tag">s</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="25">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-25"></div>
+              </div>
+
+              <!-- PUZZLE 26 -->
+              <div class="puzzle-card" id="card-26">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 26</span>
+                    <h3 class="card-headline">Cosmic Gamma-Ray Wavelength</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-26">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A cosmic gamma-ray photon carries energy <span class="hl">E = 7.0676 × 10⁻¹⁷ J</span>. 
+                    Given <span class="hl">h · c = 1.986 × 10⁻²⁵ J·m</span>, compute its wavelength <span class="hl">λ</span> in nanometers (to 3 decimal places).
+                  </p>
+                  <div class="formula-box">
+                    <code>λ = (hc / E) · 10⁹ nm</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-26" placeholder="Enter wavelength in nm..." autocomplete="off">
+                    <span class="unit-tag">nm</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="26">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-26"></div>
+              </div>
+
+              <!-- PUZZLE 27 -->
+              <div class="puzzle-card" id="card-27">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id">CHAMBER 27</span>
+                    <h3 class="card-headline">Relativistic Kinetic Energy</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-27">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    A high-energy proton with rest mass energy <span class="hl">E₀ = 10.0 GeV</span> is accelerated until its kinetic energy factor 
+                    <span class="hl">(γ - 1) = 2.810</span>. Compute its relativistic kinetic energy <span class="hl">K</span> in <span class="hl">GeV</span>.
+                  </p>
+                  <div class="formula-box">
+                    <code>K = (γ - 1) · E₀</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-27" placeholder="Enter kinetic energy in GeV..." autocomplete="off">
+                    <span class="unit-tag">GeV</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="27">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-27"></div>
+              </div>
+
+              <!-- PUZZLE 28: THE GRAND CLIMAX & MIRROR FREQUENCY -->
+              <div class="puzzle-card grand-climax-card" id="card-28">
+                <div class="card-top">
+                  <div class="card-header-info">
+                    <span class="card-id climax-tag">CHAMBER 28 // GRAND CLIMAX</span>
+                    <h3 class="card-headline">Temporal Mirror Resonance (The Master Frequency)</h3>
+                  </div>
+                  <span class="card-status-badge" id="badge-28">LOCKED</span>
+                </div>
+                <div class="card-body">
+                  <p class="puzzle-question">
+                    In the final chamber of the Stargate, the forward and reverse time echoes of an Einstein-Rosen bridge achieve quantum phase locking. 
+                    A base frequency harmonic of <span class="hl">f₀ = 2810 Hz</span> combines with its palindromic reverse-entropy echo of 
+                    <span class="hl">δf = 0.0182 Hz</span>. Compute the composite mirror resonance frequency <span class="hl">f_mirror</span> (to 4 decimal places).
+                  </p>
+                  <div class="formula-box">
+                    <code>f_mirror = f₀ + δf</code>
+                  </div>
+                </div>
+                <div class="card-input-row">
+                  <div class="input-wrap">
+                    <input type="text" id="input-28" placeholder="Enter mirror frequency (e.g. 0000.0000)..." autocomplete="off">
+                    <span class="unit-tag">Hz</span>
+                  </div>
+                  <button class="btn-verify" data-puzzle="28">Verify</button>
+                </div>
+                <div class="card-feedback" id="feedback-28"></div>
+              </div>
+
+            </div>
+
+            <div class="sector-navigation-controls">
+              <button class="btn-nav-sector btn-nav-prev" data-prev-sector="3">
+                <span class="btn-arrow">←</span>
+                <span>Back to Sector 03</span>
+              </button>
+              <div></div>
+            </div>
+          </div>
+
+          <!-- ================= MASTER DECRYPTION PROTOCOL ================= -->
+          <div class="master-vault-card" id="master-vault-card">
+            <div class="master-header">
+              <span class="master-icon">✦</span>
+              <span class="master-title">FINAL DECRYPTION // MASTER FREQUENCY</span>
+            </div>
+            <p class="master-instruction">
+              Look closely at the coordinates you have unlocked across all 28 chambers. 
+              The cosmic laws converge on a singular recurring sequence: <strong>2810</strong>. 
+              <strong>Strip away the decimal boundaries</strong> to extract the 4-digit master key:
+            </p>
+            <div class="master-input-row">
+              <input type="password" maxlength="4" id="master-passcode" placeholder="••••" autocomplete="off">
+              <button id="btn-unlock-master" class="btn-master">BREACH GATEWAY</button>
+            </div>
+            <div id="master-feedback" class="master-feedback"></div>
+          </div>
+
+          <!-- ================= DEV / PREVIEW SKIP BUTTON ================= -->
+          <div class="dev-skip-container">
+            <button id="btn-skip-dev" class="btn-dev-skip" title="Preview Final Gateway Breach">
+              <span class="skip-bolt">⚡</span>
+              <span>[DEV PREVIEW] Skip & Breach Gateway (Test Mode)</span>
+              <span class="skip-arrow">➔</span>
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ========================================================
+       BREACH OVERLAY / FINAL PORTAL (REVEALED ON SOLVING 2810)
+       ======================================================== -->
+  <div id="breach-modal" class="breach-modal hidden">
+    <!-- Close Preview Button for testing -->
+    <button id="btn-close-breach" class="btn-close-breach" title="Close Preview">✕</button>
+    <div class="event-horizon-backdrop breach-version" style="background-image: url('assets/event-horizon.png');"></div>
+    <div class="breach-burst-light"></div>
+    <div class="breach-content">
+      <div class="breach-badge">
+        <span class="pulse-dot golden"></span>
+        <span>GATEWAY OPENED // COORDINATES CONVERGED</span>
+      </div>
+
+      <h1 class="breach-title">THE VEIL IS LIFTED</h1>
+
+      <p class="breach-message">
+        Every equation has settled. The cosmic coordinates have aligned with the observer.
+        The door you have unlocked does not belong to the stars—it belongs to you.
+      </p>
+
+      <p class="breach-tagline">
+        Step through into what has been prepared on the other side.
+      </p>
+
+      <!-- The Final Vercel Destination Link Button -->
+      <!-- Replace href with actual Vercel URL when ready -->
+      <a id="btn-final-destination" href="https://be-talha.vercel.app" target="_blank" rel="noopener noreferrer" class="btn-portal">
+        <span class="btn-portal-glow"></span>
+        <span class="btn-portal-text">ENTER THE SANCTUARY</span>
+        <span class="btn-portal-arrow">➔</span>
+      </a>
+
+      <p class="breach-footer-note">Protocol 2810 • Frequency Authenticated</p>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       OBSERVER'S STUDY LIGHTBOX / FIELD NOTES MODAL
+       ======================================================== -->
+  <div id="desk-modal" class="desk-modal hidden" aria-hidden="true" role="dialog">
+    <div class="desk-modal-backdrop" id="desk-modal-backdrop"></div>
+    <div class="desk-modal-dialog">
+      <div class="desk-modal-header">
+        <div class="desk-modal-badge">
+          <span class="pulse-dot golden"></span>
+          <span>THE OBSERVER'S STUDY // CELESTIAL DESK</span>
+        </div>
+        <button id="btn-close-desk-modal" class="btn-close-modal" aria-label="Close Preview">✕</button>
+      </div>
+
+      <div class="desk-modal-image-container">
+        <img src="assets/observers-codex.jpg" alt="The Observer's Desk with Quantum Physics & Celestial Calculations" class="desk-modal-img">
+        <div class="desk-modal-vignette"></div>
+      </div>
+
+      <div class="desk-modal-footer">
+        <div class="desk-modal-quote">
+          <p class="modal-quote-text">“Same sky. Different place. Same dream.”</p>
+          <p class="modal-quote-sub">The Universe is stranger than we can imagine — J. B. S. Haldane</p>
+        </div>
+        <div class="desk-modal-tags">
+          <span class="study-tag">Astrophysics</span>
+          <span class="study-tag">Quantum Physics</span>
+          <span class="study-tag">Schrödinger</span>
+          <span class="study-tag">Harmonics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="gateway.js"></script>
+</body>
+</html>
