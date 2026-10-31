@@ -245,6 +245,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const ctx = canvas.getContext('2d');
   let width, height;
   let particles = [];
+  let currentX = 0, currentY = 0;
+  let targetX = 0, targetY = 0;
 
   function resizeCanvas() {
     width = canvas.width = window.innerWidth;
@@ -262,7 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
         radius: Math.random() * 1.6 + 0.4,
         alpha: Math.random() * 0.7 + 0.2,
         twinkleSpeed: (Math.random() * 0.02 + 0.008) * (Math.random() > 0.5 ? 1 : -1),
-        vy: (Math.random() * 0.15 + 0.05) * -1
+        vy: (Math.random() * 0.15 + 0.05) * -1,
+        vx: (Math.random() - 0.5) * 0.12
       });
     }
   }
@@ -282,10 +285,14 @@ document.addEventListener('DOMContentLoaded', () => {
         p.twinkleSpeed = -p.twinkleSpeed;
       }
       p.y += p.vy;
+      const cosmicWind = Math.sin(driftTime * 0.35) * 0.35;
+      p.x += p.vx + cosmicWind + (currentX * 0.015);
       if (p.y < 0) {
         p.y = height;
         p.x = Math.random() * width;
       }
+      if (p.x < 0) p.x = width;
+      if (p.x > width) p.x = 0;
 
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -302,6 +309,78 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('resize', resizeCanvas);
   resizeCanvas();
   drawCosmicSky();
+
+  // ==========================================
+  // 2B. CINEMATIC BACKGROUND MOVEMENT & 3D PARALLAX (TALHA HARMONICS)
+  // ==========================================
+  const activeBackdrops = document.querySelectorAll('.event-horizon-backdrop');
+  const breachContents = document.querySelectorAll('.breach-content');
+  const breachBurst = document.querySelector('.breach-burst-light');
+
+  window.addEventListener('mousemove', (e) => {
+    const normX = (e.clientX / window.innerWidth) * 2 - 1;
+    const normY = (e.clientY / window.innerHeight) * 2 - 1;
+    targetX = normX * 36;
+    targetY = normY * 26;
+  });
+
+  window.addEventListener('mouseleave', () => {
+    targetX = 0;
+    targetY = 0;
+  });
+
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches && e.touches[0]) {
+      const touch = e.touches[0];
+      const normX = (touch.clientX / window.innerWidth) * 2 - 1;
+      const normY = (touch.clientY / window.innerHeight) * 2 - 1;
+      targetX = normX * 24;
+      targetY = normY * 18;
+    }
+  }, { passive: true });
+
+  let driftTime = 0;
+  function animateCosmicMotion() {
+    driftTime += 0.012;
+    currentX += (targetX - currentX) * 0.05;
+    currentY += (targetY - currentY) * 0.05;
+
+    // Graceful automatic celestial multi-wave orbit & drift
+    // Continuously glides in an organic celestial trajectory even without mouse movement
+    const autoDriftX = Math.sin(driftTime * 0.45) * 32 + Math.cos(driftTime * 0.22) * 18;
+    const autoDriftY = Math.cos(driftTime * 0.38) * 24 + Math.sin(driftTime * 0.16) * 14;
+    const autoScale  = 1.09 + Math.sin(driftTime * 0.28) * 0.045;
+    const autoRotate = Math.sin(driftTime * 0.24) * 2.2;
+
+    if (activeBackdrops.length > 0) {
+      const finalX = -(currentX + autoDriftX);
+      const finalY = -(currentY + autoDriftY);
+      const transformVal = `translate3d(${finalX.toFixed(2)}px, ${finalY.toFixed(2)}px, 0) scale(${autoScale.toFixed(3)}) rotate(${autoRotate.toFixed(2)}deg)`;
+      activeBackdrops.forEach(b => {
+        b.style.transform = transformVal;
+      });
+    }
+
+    // Floating zero-gravity buoyancy on foreground content
+    if (breachContents.length > 0) {
+      const cardFloatX = -Math.sin(driftTime * 0.45) * 8 + (currentX * 0.16);
+      const cardFloatY = -Math.cos(driftTime * 0.38) * 6 + (currentY * 0.16);
+      const contentTransform = `translate3d(${cardFloatX.toFixed(2)}px, ${cardFloatY.toFixed(2)}px, 0)`;
+      breachContents.forEach(c => {
+        c.style.transform = contentTransform;
+      });
+    }
+
+    if (breachBurst) {
+      const burstFloatX = Math.sin(driftTime * 0.32) * 12 - (currentX * 0.12);
+      const burstFloatY = Math.cos(driftTime * 0.26) * 10 - (currentY * 0.12);
+      breachBurst.style.transform = `translate(-50%, -50%) translate3d(${burstFloatX.toFixed(2)}px, ${burstFloatY.toFixed(2)}px, 0)`;
+    }
+
+    requestAnimationFrame(animateCosmicMotion);
+  }
+
+  animateCosmicMotion();
 
   // ==========================================
   // 3. PUZZLE VERIFICATION & STARGATE LOGIC (28 CHAMBERS // 4 SECTORS // 10 MARKS)

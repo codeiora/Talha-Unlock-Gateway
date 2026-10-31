@@ -2209,6 +2209,7 @@ body.page-gateway-body {
   text-align: center;
   backdrop-filter: blur(25px);
   overflow-y: auto;
+  overflow-x: hidden;
   animation: fadeIn 0.8s ease forwards;
 }
 
@@ -2218,8 +2219,43 @@ body.page-gateway-body {
 }
 
 .event-horizon-backdrop.breach-version {
-  opacity: 0.48;
-  filter: contrast(1.2) brightness(1);
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  opacity: 0.82;
+  filter: contrast(1.28) brightness(1.14) saturate(1.2);
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+}
+
+.breach-modal .event-horizon-overlay.breach-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.event-horizon-backdrop.gateway-main-backdrop {
+  position: fixed;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  opacity: 0.28;
+  filter: contrast(1.22) brightness(1.05) saturate(1.15);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+}
+
+.event-horizon-overlay.gateway-main-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .breach-burst-light {

@@ -315,7 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
         p.twinkleSpeed = -p.twinkleSpeed;
       }
       p.y += p.vy;
-      p.x += p.vx + (currentX * 0.015);
+      const cosmicWind = Math.sin(driftTime * 0.35) * 0.35;
+      p.x += p.vx + cosmicWind + (currentX * 0.015);
       if (p.y < 0) {
         p.y = height;
         p.x = Math.random() * width;
@@ -369,25 +370,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let driftTime = 0;
   function animateCosmicMotion() {
-    driftTime += 0.01;
+    driftTime += 0.012;
     currentX += (targetX - currentX) * 0.05;
     currentY += (targetY - currentY) * 0.05;
 
-    const driftX = Math.sin(driftTime * 0.6) * 16 + Math.cos(driftTime * 0.25) * 8;
-    const driftY = Math.cos(driftTime * 0.45) * 12 + Math.sin(driftTime * 0.2) * 6;
-    const driftScale = 1.08 + Math.sin(driftTime * 0.35) * 0.035;
-    const driftRotate = Math.sin(driftTime * 0.3) * 1.5;
+    // Graceful automatic celestial multi-wave orbit & drift
+    // Continuously glides in an organic celestial trajectory even without mouse movement
+    const autoDriftX = Math.sin(driftTime * 0.45) * 32 + Math.cos(driftTime * 0.22) * 18;
+    const autoDriftY = Math.cos(driftTime * 0.38) * 24 + Math.sin(driftTime * 0.16) * 14;
+    const autoScale  = 1.09 + Math.sin(driftTime * 0.28) * 0.045;
+    const autoRotate = Math.sin(driftTime * 0.24) * 2.2;
 
     if (backdrop) {
-      const finalX = -(currentX + driftX);
-      const finalY = -(currentY + driftY);
-      backdrop.style.transform = `translate3d(${finalX.toFixed(2)}px, ${finalY.toFixed(2)}px, 0) scale(${driftScale.toFixed(3)}) rotate(${driftRotate.toFixed(2)}deg)`;
+      const finalX = -(currentX + autoDriftX);
+      const finalY = -(currentY + autoDriftY);
+      backdrop.style.transform = `translate3d(${finalX.toFixed(2)}px, ${finalY.toFixed(2)}px, 0) scale(${autoScale.toFixed(3)}) rotate(${autoRotate.toFixed(2)}deg)`;
     }
 
     if (inductionContent) {
-      const textX = currentX * 0.16;
-      const textY = currentY * 0.16;
-      inductionContent.style.transform = `translate3d(${textX.toFixed(2)}px, ${textY.toFixed(2)}px, 0)`;
+      const cardFloatX = -Math.sin(driftTime * 0.45) * 8 + (currentX * 0.16);
+      const cardFloatY = -Math.cos(driftTime * 0.38) * 6 + (currentY * 0.16);
+      inductionContent.style.transform = `translate3d(${cardFloatX.toFixed(2)}px, ${cardFloatY.toFixed(2)}px, 0)`;
     }
 
     requestAnimationFrame(animateCosmicMotion);
