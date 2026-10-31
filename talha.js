@@ -37,150 +37,63 @@ document.addEventListener('DOMContentLoaded', () => {
     osc.stop(now + duration);
   }
 
-  // Procedural Cosmic Ambient Tune Generator (Web Audio API)
-  class CosmicAmbientEngine {
-    constructor(getAudioCtx) {
-      this.getAudioCtx = getAudioCtx;
-      this.isPlaying = false;
-      this.masterGain = null;
-      this.nodes = [];
-      this.sparkleTimer = null;
+  // Ambient Cosmic Tune Player Controller (Downloaded Cosmic Audio)
+  class CosmicTunePlayer {
+    constructor() {
+      this.audio = document.getElementById('cosmic-tune-audio');
+      if (!this.audio) {
+        this.audio = new Audio('assets/cosmic-tune.mp3');
+        this.audio.loop = true;
+      }
+      this.baseVolume = 0.28;
+      this.audio.volume = this.baseVolume;
       this.isMuted = localStorage.getItem('cosmic_tune_muted') === 'true';
     }
 
+    get isPlaying() {
+      return this.audio && !this.audio.paused;
+    }
+
     start() {
-      if (this.isPlaying || this.isMuted) return;
-      const ctx = this.getAudioCtx();
-      if (!ctx) return;
-      if (ctx.state === 'suspended') {
-        ctx.resume();
+      if (this.isMuted || !this.audio) return;
+      this.audio.volume = this.baseVolume;
+      const playPromise = this.audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
       }
-
-      this.isPlaying = true;
-      const now = ctx.currentTime;
-
-      // Master gain for ambient tune: Rich, warm, clearly audible under voice (0.22)
-      this.masterGain = ctx.createGain();
-      this.masterGain.gain.setValueAtTime(0.0001, now);
-      this.masterGain.gain.linearRampToValueAtTime(0.22, now + 1.8);
-      this.masterGain.connect(ctx.destination);
-
-      // Warm resonant filter with headroom for celestial breath
-      const padFilter = ctx.createBiquadFilter();
-      padFilter.type = 'lowpass';
-      padFilter.frequency.setValueAtTime(680, now);
-      padFilter.Q.setValueAtTime(1.2, now);
-      padFilter.connect(this.masterGain);
-
-      // 1. Deep Sub-Space Resonant Drone (55Hz / A1 & 110Hz / A2)
-      const droneFreqs = [55.0, 55.4, 110.0, 110.3];
-      droneFreqs.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        osc.type = idx < 2 ? 'sine' : 'triangle';
-        osc.frequency.setValueAtTime(freq, now);
-        g.gain.setValueAtTime(idx < 2 ? 0.38 : 0.20, now);
-        osc.connect(g);
-        g.connect(padFilter);
-        osc.start(now);
-        this.nodes.push(osc, g);
-      });
-
-      // 2. Celestial Harmonic Pad Chord (A3, C#4, E4, A4, B4 - mysterious Interstellar pad)
-      const celestialChord = [220.0, 277.18, 329.63, 440.0, 493.88];
-      celestialChord.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
-        osc.frequency.setValueAtTime(freq, now);
-        const detune = (idx % 2 === 0 ? 1 : -1) * 3.5;
-        osc.detune.setValueAtTime(detune, now);
-        g.gain.setValueAtTime(0.15, now);
-        osc.connect(g);
-        g.connect(padFilter);
-        osc.start(now);
-        this.nodes.push(osc, g);
-      });
-
-      // 3. Slow Cosmic LFO (Breathing Nebulae Filter Sweeps ~16s cycle)
-      const lfo = ctx.createOscillator();
-      const lfoGain = ctx.createGain();
-      lfo.type = 'sine';
-      lfo.frequency.setValueAtTime(0.06, now);
-      lfoGain.gain.setValueAtTime(220, now); // Sweeps between 460Hz and 900Hz
-      lfo.connect(padFilter.frequency);
-      lfo.start(now);
-      this.nodes.push(lfo, lfoGain, padFilter);
-
-      // 4. Starlight Shimmer / Pulsar Harmonics (Twinkling celestial space dust)
-      const sparkleNotes = [880.0, 987.77, 1108.73, 1318.51, 1479.98, 1661.22];
-      const triggerSparkle = () => {
-        if (!this.isPlaying) return;
-        const t = ctx.currentTime;
-        const note = sparkleNotes[Math.floor(Math.random() * sparkleNotes.length)];
-
-        const spkOsc = ctx.createOscillator();
-        const spkGain = ctx.createGain();
-        spkOsc.type = 'sine';
-        spkOsc.frequency.setValueAtTime(note, t);
-
-        spkGain.gain.setValueAtTime(0.0001, t);
-        spkGain.gain.linearRampToValueAtTime(0.05, t + 0.8);
-        spkGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.2);
-
-        spkOsc.connect(spkGain);
-        spkGain.connect(this.masterGain);
-
-        spkOsc.start(t);
-        spkOsc.stop(t + 4.5);
-
-        const nextDelay = 4500 + Math.random() * 3000;
-        this.sparkleTimer = setTimeout(triggerSparkle, nextDelay);
-      };
-
-      this.sparkleTimer = setTimeout(triggerSparkle, 2000);
-    }
-
-    swell() {
-      // Elevate background ambient volume gracefully after narrator finishes speaking
-      if (!this.isPlaying || !this.masterGain || !this.getAudioCtx()) return;
-      const ctx = this.getAudioCtx();
-      const now = ctx.currentTime;
-      this.masterGain.gain.linearRampToValueAtTime(0.30, now + 2.5);
-    }
-
-    duck() {
-      // Smoothly settle background ambient volume under voice
-      if (!this.isPlaying || !this.masterGain || !this.getAudioCtx()) return;
-      const ctx = this.getAudioCtx();
-      const now = ctx.currentTime;
-      this.masterGain.gain.linearRampToValueAtTime(0.22, now + 1.2);
     }
 
     stop() {
-      if (!this.isPlaying) return;
-      this.isPlaying = false;
-      clearTimeout(this.sparkleTimer);
-
-      if (this.masterGain && this.getAudioCtx()) {
-        const ctx = this.getAudioCtx();
-        const now = ctx.currentTime;
-        this.masterGain.gain.linearRampToValueAtTime(0.0001, now + 1.2);
-
-        setTimeout(() => {
-          this.nodes.forEach(n => {
-            try {
-              if (n.stop) n.stop();
-              if (n.disconnect) n.disconnect();
-            } catch (e) {}
-          });
-          this.nodes = [];
-          if (this.masterGain) {
-            try { this.masterGain.disconnect(); } catch (e) {}
-            this.masterGain = null;
-          }
-        }, 1300);
+      if (this.audio) {
+        this.audio.pause();
       }
+    }
+
+    duck() {
+      // Settle background tune under voice narration
+      if (!this.audio || this.isMuted) return;
+      this.fadeTo(0.12, 800);
+    }
+
+    swell() {
+      // Swell background tune during narration gaps
+      if (!this.audio || this.isMuted) return;
+      this.fadeTo(0.35, 1500);
+    }
+
+    fadeTo(targetVol, durationMs) {
+      if (!this.audio) return;
+      const startVol = this.audio.volume;
+      const startTime = performance.now();
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / durationMs, 1);
+        this.audio.volume = startVol + (targetVol - startVol) * progress;
+        if (progress < 1 && !this.audio.paused) {
+          requestAnimationFrame(step);
+        }
+      };
+      requestAnimationFrame(step);
     }
 
     setMuted(muted) {
@@ -199,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const cosmicTune = new CosmicAmbientEngine(initAudio);
+  const cosmicTune = new CosmicTunePlayer();
 
   // ==========================================
   // 2. NARRATION AUDIO CONTROLLER (WITH DYNAMIC LOOP & GAP)

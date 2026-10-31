@@ -6,148 +6,47 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ==========================================
-  // 1. WEB AUDIO API SYNTHESIZER & COSMIC TUNE
+  // 1. COSMIC BACKGROUND TUNE & AUDIO SFX
   // ==========================================
   let audioCtx = null;
 
   function initAudio() {
     if (!audioCtx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioContext();
+      if (AudioContext) {
+        audioCtx = new AudioContext();
+      }
     }
-    if (audioCtx.state === 'suspended') {
+    if (audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
     return audioCtx;
   }
 
-  // Procedural Cosmic Ambient Tune Generator (Web Audio API)
-  class CosmicAmbientEngine {
-    constructor(getAudioCtx) {
-      this.getAudioCtx = getAudioCtx;
-      this.isPlaying = false;
-      this.masterGain = null;
-      this.nodes = [];
-      this.sparkleTimer = null;
+  // Audio player controller for the cosmic tune MP3
+  class CosmicTunePlayer {
+    constructor() {
+      this.audio = document.getElementById('cosmic-tune-audio');
+      if (!this.audio) {
+        this.audio = new Audio('assets/cosmic-tune.mp3');
+        this.audio.loop = true;
+      }
+      this.audio.volume = 0.40;
       this.isMuted = localStorage.getItem('cosmic_tune_muted') === 'true';
     }
 
     start() {
-      if (this.isPlaying || this.isMuted) return;
-      const ctx = this.getAudioCtx();
-      if (!ctx) return;
-      if (ctx.state === 'suspended') {
-        ctx.resume();
+      if (this.isMuted || !this.audio) return;
+      this.audio.volume = 0.40;
+      const playPromise = this.audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
       }
-
-      this.isPlaying = true;
-      const now = ctx.currentTime;
-
-      // Master gain for the ambient tune (Smooth fade-in)
-      this.masterGain = ctx.createGain();
-      this.masterGain.gain.setValueAtTime(0.0001, now);
-      this.masterGain.gain.linearRampToValueAtTime(0.09, now + 2.5);
-      this.masterGain.connect(ctx.destination);
-
-      // Lowpass resonant filter for celestial warmth
-      const padFilter = ctx.createBiquadFilter();
-      padFilter.type = 'lowpass';
-      padFilter.frequency.setValueAtTime(420, now);
-      padFilter.Q.setValueAtTime(1.4, now);
-      padFilter.connect(this.masterGain);
-
-      // 1. Deep Sub-Space Resonant Drone (55Hz / A1 & 110Hz / A2)
-      const droneFreqs = [55.0, 55.4, 110.0, 110.3];
-      droneFreqs.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        osc.type = idx < 2 ? 'sine' : 'triangle';
-        osc.frequency.setValueAtTime(freq, now);
-        g.gain.setValueAtTime(idx < 2 ? 0.32 : 0.16, now);
-        osc.connect(g);
-        g.connect(padFilter);
-        osc.start(now);
-        this.nodes.push(osc, g);
-      });
-
-      // 2. Celestial Harmonic Chord (A3, E4, B4, C#5 - open cosmic ether chord)
-      const celestialChord = [220.0, 329.63, 493.88, 554.37];
-      celestialChord.forEach((freq, idx) => {
-        const osc = ctx.createOscillator();
-        const g = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, now);
-        const detune = (idx % 2 === 0 ? 1 : -1) * 3;
-        osc.detune.setValueAtTime(detune, now);
-        g.gain.setValueAtTime(0.11, now);
-        osc.connect(g);
-        g.connect(padFilter);
-        osc.start(now);
-        this.nodes.push(osc, g);
-      });
-
-      // 3. Slow Cosmic LFO (Breathing Nebulae Filter Sweeps ~18s cycle)
-      const lfo = ctx.createOscillator();
-      const lfoGain = ctx.createGain();
-      lfo.type = 'sine';
-      lfo.frequency.setValueAtTime(0.055, now);
-      lfoGain.gain.setValueAtTime(180, now);
-      lfo.connect(padFilter.frequency);
-      lfo.start(now);
-      this.nodes.push(lfo, lfoGain, padFilter);
-
-      // 4. Starlight Shimmer / Pulsar Harmonics (Twinkling celestial dust)
-      const sparkleNotes = [880.0, 987.77, 1108.73, 1318.51, 1479.98, 1661.22];
-      const triggerSparkle = () => {
-        if (!this.isPlaying) return;
-        const t = ctx.currentTime;
-        const note = sparkleNotes[Math.floor(Math.random() * sparkleNotes.length)];
-
-        const spkOsc = ctx.createOscillator();
-        const spkGain = ctx.createGain();
-        spkOsc.type = 'sine';
-        spkOsc.frequency.setValueAtTime(note, t);
-
-        spkGain.gain.setValueAtTime(0.0001, t);
-        spkGain.gain.linearRampToValueAtTime(0.035, t + 0.9);
-        spkGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.5);
-
-        spkOsc.connect(spkGain);
-        spkGain.connect(this.masterGain);
-
-        spkOsc.start(t);
-        spkOsc.stop(t + 4.8);
-
-        const nextDelay = 6000 + Math.random() * 4000;
-        this.sparkleTimer = setTimeout(triggerSparkle, nextDelay);
-      };
-
-      this.sparkleTimer = setTimeout(triggerSparkle, 3500);
     }
 
     stop() {
-      if (!this.isPlaying) return;
-      this.isPlaying = false;
-      clearTimeout(this.sparkleTimer);
-
-      if (this.masterGain && this.getAudioCtx()) {
-        const ctx = this.getAudioCtx();
-        const now = ctx.currentTime;
-        this.masterGain.gain.linearRampToValueAtTime(0.0001, now + 1.2);
-
-        setTimeout(() => {
-          this.nodes.forEach(n => {
-            try {
-              if (n.stop) n.stop();
-              if (n.disconnect) n.disconnect();
-            } catch (e) {}
-          });
-          this.nodes = [];
-          if (this.masterGain) {
-            try { this.masterGain.disconnect(); } catch (e) {}
-            this.masterGain = null;
-          }
-        }, 1300);
+      if (this.audio) {
+        this.audio.pause();
       }
     }
 
@@ -167,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const cosmicTune = new CosmicAmbientEngine(initAudio);
+  const cosmicTune = new CosmicTunePlayer();
 
   const audioToggle = document.getElementById('audio-toggle');
   const soundIconOn = document.getElementById('sound-icon-on');
