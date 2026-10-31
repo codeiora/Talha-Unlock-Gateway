@@ -59,17 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
       this.isPlaying = true;
       const now = ctx.currentTime;
 
-      // Master gain for the ambient tune (Smooth fade-in)
+      // Master gain for ambient tune: Rich, warm, clearly audible under voice (0.22)
       this.masterGain = ctx.createGain();
       this.masterGain.gain.setValueAtTime(0.0001, now);
-      this.masterGain.gain.linearRampToValueAtTime(0.09, now + 2.5);
+      this.masterGain.gain.linearRampToValueAtTime(0.22, now + 1.8);
       this.masterGain.connect(ctx.destination);
 
-      // Lowpass resonant filter for celestial warmth
+      // Warm resonant filter with headroom for celestial breath
       const padFilter = ctx.createBiquadFilter();
       padFilter.type = 'lowpass';
-      padFilter.frequency.setValueAtTime(420, now);
-      padFilter.Q.setValueAtTime(1.4, now);
+      padFilter.frequency.setValueAtTime(680, now);
+      padFilter.Q.setValueAtTime(1.2, now);
       padFilter.connect(this.masterGain);
 
       // 1. Deep Sub-Space Resonant Drone (55Hz / A1 & 110Hz / A2)
@@ -79,40 +79,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const g = ctx.createGain();
         osc.type = idx < 2 ? 'sine' : 'triangle';
         osc.frequency.setValueAtTime(freq, now);
-        g.gain.setValueAtTime(idx < 2 ? 0.32 : 0.16, now);
+        g.gain.setValueAtTime(idx < 2 ? 0.38 : 0.20, now);
         osc.connect(g);
         g.connect(padFilter);
         osc.start(now);
         this.nodes.push(osc, g);
       });
 
-      // 2. Celestial Harmonic Chord (A3, E4, B4, C#5 - open cosmic ether chord)
-      const celestialChord = [220.0, 329.63, 493.88, 554.37];
+      // 2. Celestial Harmonic Pad Chord (A3, C#4, E4, A4, B4 - mysterious Interstellar pad)
+      const celestialChord = [220.0, 277.18, 329.63, 440.0, 493.88];
       celestialChord.forEach((freq, idx) => {
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
         osc.frequency.setValueAtTime(freq, now);
-        const detune = (idx % 2 === 0 ? 1 : -1) * 3;
+        const detune = (idx % 2 === 0 ? 1 : -1) * 3.5;
         osc.detune.setValueAtTime(detune, now);
-        g.gain.setValueAtTime(0.11, now);
+        g.gain.setValueAtTime(0.15, now);
         osc.connect(g);
         g.connect(padFilter);
         osc.start(now);
         this.nodes.push(osc, g);
       });
 
-      // 3. Slow Cosmic LFO (Breathing Nebulae Filter Sweeps ~18s cycle)
+      // 3. Slow Cosmic LFO (Breathing Nebulae Filter Sweeps ~16s cycle)
       const lfo = ctx.createOscillator();
       const lfoGain = ctx.createGain();
       lfo.type = 'sine';
-      lfo.frequency.setValueAtTime(0.055, now);
-      lfoGain.gain.setValueAtTime(180, now);
+      lfo.frequency.setValueAtTime(0.06, now);
+      lfoGain.gain.setValueAtTime(220, now); // Sweeps between 460Hz and 900Hz
       lfo.connect(padFilter.frequency);
       lfo.start(now);
       this.nodes.push(lfo, lfoGain, padFilter);
 
-      // 4. Starlight Shimmer / Pulsar Harmonics (Twinkling celestial dust)
+      // 4. Starlight Shimmer / Pulsar Harmonics (Twinkling celestial space dust)
       const sparkleNotes = [880.0, 987.77, 1108.73, 1318.51, 1479.98, 1661.22];
       const triggerSparkle = () => {
         if (!this.isPlaying) return;
@@ -125,20 +125,36 @@ document.addEventListener('DOMContentLoaded', () => {
         spkOsc.frequency.setValueAtTime(note, t);
 
         spkGain.gain.setValueAtTime(0.0001, t);
-        spkGain.gain.linearRampToValueAtTime(0.035, t + 0.9);
-        spkGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.5);
+        spkGain.gain.linearRampToValueAtTime(0.05, t + 0.8);
+        spkGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.2);
 
         spkOsc.connect(spkGain);
         spkGain.connect(this.masterGain);
 
         spkOsc.start(t);
-        spkOsc.stop(t + 4.8);
+        spkOsc.stop(t + 4.5);
 
-        const nextDelay = 6000 + Math.random() * 4000;
+        const nextDelay = 4500 + Math.random() * 3000;
         this.sparkleTimer = setTimeout(triggerSparkle, nextDelay);
       };
 
-      this.sparkleTimer = setTimeout(triggerSparkle, 3500);
+      this.sparkleTimer = setTimeout(triggerSparkle, 2000);
+    }
+
+    swell() {
+      // Elevate background ambient volume gracefully after narrator finishes speaking
+      if (!this.isPlaying || !this.masterGain || !this.getAudioCtx()) return;
+      const ctx = this.getAudioCtx();
+      const now = ctx.currentTime;
+      this.masterGain.gain.linearRampToValueAtTime(0.30, now + 2.5);
+    }
+
+    duck() {
+      // Smoothly settle background ambient volume under voice
+      if (!this.isPlaying || !this.masterGain || !this.getAudioCtx()) return;
+      const ctx = this.getAudioCtx();
+      const now = ctx.currentTime;
+      this.masterGain.gain.linearRampToValueAtTime(0.22, now + 1.2);
     }
 
     stop() {
@@ -186,124 +202,44 @@ document.addEventListener('DOMContentLoaded', () => {
   const cosmicTune = new CosmicAmbientEngine(initAudio);
 
   // ==========================================
-  // 2. NARRATION CONTROLLER (DEEP MALE AI VOICE / DYNAMIC TTS)
+  // 2. NARRATION AUDIO CONTROLLER (WITH DYNAMIC LOOP & GAP)
+  // Plays custom audio file: assets/talha-narration.mp3
   // ==========================================
   const narrationAudio = document.getElementById('induction-voice-audio');
-
-  // Dynamically read title name (TALHA) + induction message in talha.html
-  function getInductionText() {
-    const titleEl = document.querySelector('.talha-title');
-    let titleText = titleEl ? titleEl.textContent.trim() : 'Talha';
-
-    // Convert all-caps like "TALHA" to "Talha" so TTS pronounces it as a natural name rather than spelling out letters
-    if (titleText && titleText === titleText.toUpperCase() && titleText.length > 1) {
-      titleText = titleText.charAt(0).toUpperCase() + titleText.slice(1).toLowerCase();
-    }
-
-    const card = document.querySelector('.induction-card');
-    if (!card) return titleText ? `${titleText}.` : '';
-
-    const paragraphs = card.querySelectorAll('p');
-    let bodyText = '';
-    if (paragraphs.length > 0) {
-      bodyText = Array.from(paragraphs)
-        .map(p => (p.dataset.rawText || p.textContent).replace(/\s+/g, ' ').trim())
-        .filter(t => t.length > 0)
-        .join(' ');
-    } else {
-      bodyText = card.textContent.replace(/\s+/g, ' ').trim();
-    }
-
-    return titleText ? `${titleText}. ${bodyText}` : bodyText;
-  }
-
-  let cachedVoices = [];
-  function populateVoices() {
-    if ('speechSynthesis' in window) {
-      cachedVoices = window.speechSynthesis.getVoices();
-    }
-  }
-  populateVoices();
-  if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
-    window.speechSynthesis.onvoiceschanged = populateVoices;
-  }
+  let loopTimer = null;
+  const LOOP_GAP_MS = 8000; // 8-second cinematic pause between narration loops
 
   function stopNarration() {
+    clearTimeout(loopTimer);
+    loopTimer = null;
     if (narrationAudio) {
       try {
         narrationAudio.pause();
         narrationAudio.currentTime = 0;
       } catch (e) {}
     }
-    if ('speechSynthesis' in window) {
-      try {
-        window.speechSynthesis.cancel();
-      } catch (e) {}
-    }
   }
 
   function playNarration() {
-    if (cosmicTune.isMuted) return;
-    stopNarration();
+    if (cosmicTune.isMuted || !narrationAudio) return;
+    clearTimeout(loopTimer);
+    loopTimer = null;
 
-    // 1. Try playing custom AI audio file if placed in assets/talha-narration.mp3
-    if (narrationAudio && narrationAudio.src) {
+    // Settle background tune to accompaniment level under voice
+    if (!cosmicTune.isPlaying) {
+      cosmicTune.start();
+    } else {
+      cosmicTune.duck();
+    }
+
+    if (narrationAudio) {
+      try { narrationAudio.currentTime = 0; } catch (e) {}
+      narrationAudio.volume = 1.0;
       const playPromise = narrationAudio.play();
       if (playPromise !== undefined) {
-        playPromise.then(() => {
-          // Playing custom audio
-        }).catch(() => {
-          // File absent or blocked, seamless fallback to browser TTS
-          speakWithBrowserTTS();
-        });
-        return;
+        playPromise.catch(() => {});
       }
     }
-
-    // 2. Fallback to Browser Web Speech API
-    speakWithBrowserTTS();
-  }
-
-  function speakWithBrowserTTS() {
-    if (!('speechSynthesis' in window) || cosmicTune.isMuted) return;
-
-    const dynamicText = getInductionText();
-    if (!dynamicText) return;
-
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(dynamicText);
-
-    const voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
-    let selectedVoice = null;
-
-    // 1. Prefer South Asian / Indian English voice (closest to Bengali English accent in browser TTS)
-    selectedVoice = voices.find(v => (v.lang === 'en-IN' || v.lang.startsWith('en-IN')) && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('ravi') || v.name.toLowerCase().includes('prabhat')));
-
-    // 2. Deep male English voice
-    if (!selectedVoice) {
-      selectedVoice = voices.find(v => v.lang.startsWith('en') && (v.name.toLowerCase().includes('male') || v.name.toLowerCase().includes('david') || v.name.toLowerCase().includes('george') || v.name.toLowerCase().includes('james')));
-    }
-
-    // 3. Any en-IN voice
-    if (!selectedVoice) {
-      selectedVoice = voices.find(v => v.lang.startsWith('en-IN'));
-    }
-
-    // 4. Any English voice
-    if (!selectedVoice) {
-      selectedVoice = voices.find(v => v.lang.startsWith('en'));
-    }
-
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
-
-    // Deep, grave, slow cosmic narration tone
-    utterance.pitch = 0.74; // Lower pitch = deep/grave tone
-    utterance.rate = 0.84;  // Measured, atmospheric cosmic pace
-    utterance.volume = 1.0;
-
-    window.speechSynthesis.speak(utterance);
   }
 
   // ==========================================
@@ -328,32 +264,66 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Unmute by default on arrival so user immediately gets the full audio experience
+  if (sessionStorage.getItem('talha_user_muted') !== 'true') {
+    cosmicTune.isMuted = false;
+    localStorage.setItem('cosmic_tune_muted', 'false');
+  }
+
   if (audioToggle) {
     updateToggleUI();
     audioToggle.addEventListener('click', () => {
       initAudio();
       const isMuted = cosmicTune.toggle();
+      sessionStorage.setItem('talha_user_muted', isMuted ? 'true' : 'false');
       updateToggleUI();
       if (isMuted) {
         stopNarration();
       } else {
+        cosmicTune.start();
         playNarration();
       }
     });
   }
 
-  // Auto-start ambient tune & narration on page arrival
-  playChime(659.25, 0.3); // E5 arrival tone
-  cosmicTune.start();
-  setTimeout(() => {
-    playNarration();
-  }, 700);
+  // Auto-start BOTH ambient tune & voice together on page arrival (desktop/laptop only)
+  if (window.innerWidth > 1024) {
+    playChime(659.25, 0.3); // E5 arrival tone
+    cosmicTune.start();
+    setTimeout(() => {
+      playNarration();
+    }, 400);
+  }
 
-  // Resume on user gesture if browser blocked initial autoplay
+  // When voice narration finishes: swell ambient music and schedule next loop
+  if (narrationAudio) {
+    narrationAudio.addEventListener('ended', () => {
+      // Swell ambient background tune during the quiet gap
+      cosmicTune.swell();
+
+      // Schedule next loop after an 8-second interval
+      clearTimeout(loopTimer);
+      if (!cosmicTune.isMuted) {
+        loopTimer = setTimeout(() => {
+          if (!cosmicTune.isMuted) {
+            playNarration();
+          }
+        }, LOOP_GAP_MS);
+      }
+    });
+  }
+
+  // Resume on user gesture if browser blocked initial autoplay (desktop only)
   const startOnInteraction = () => {
+    if (window.innerWidth <= 1024) return;
     initAudio();
-    if (!cosmicTune.isMuted && !cosmicTune.isPlaying) {
-      cosmicTune.start();
+    if (!cosmicTune.isMuted) {
+      if (!cosmicTune.isPlaying) {
+        cosmicTune.start();
+      }
+      if (narrationAudio && narrationAudio.paused && !loopTimer) {
+        narrationAudio.play().catch(() => {});
+      }
     }
   };
   ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => {

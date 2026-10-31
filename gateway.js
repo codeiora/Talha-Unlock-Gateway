@@ -197,8 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Auto-start cosmic tune on first user interaction if not muted
+  // Auto-start cosmic tune on first user interaction if not muted (desktop/laptop only)
   const startTuneOnGesture = () => {
+    if (window.innerWidth <= 1024) return;
     initAudio();
     if (!cosmicTune.isMuted) {
       cosmicTune.start();
@@ -208,9 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener(evt, startTuneOnGesture, { once: true, passive: true, capture: true });
   });
 
-  // Try immediate start if AudioContext is already unlocked
+  // Try immediate start if AudioContext is already unlocked (desktop/laptop only)
   try {
-    if (!cosmicTune.isMuted) {
+    if (window.innerWidth > 1024 && !cosmicTune.isMuted) {
       cosmicTune.start();
     }
   } catch(e) {}
@@ -459,6 +460,63 @@ document.addEventListener('DOMContentLoaded', () => {
   const readoutPercent = document.getElementById('readout-percent');
   const readoutText = document.getElementById('readout-text');
 
+  // ==========================================
+  // PROGRESS AUTO-SAVE (LOCALSTORAGE SYNC)
+  // ==========================================
+  const SOLVED_STORAGE_KEY = 'talha_gateway_solved_puzzles';
+
+  function saveSolvedPuzzles() {
+    try {
+      localStorage.setItem(SOLVED_STORAGE_KEY, JSON.stringify(Array.from(solvedPuzzles)));
+    } catch (e) {}
+  }
+
+  function applySolvedState(id, displayVal = null) {
+    const input = document.getElementById(`input-${id}`);
+    const feedback = document.getElementById(`feedback-${id}`);
+    const card = document.getElementById(`card-${id}`);
+    const badge = document.getElementById(`badge-${id}`);
+    const btn = card ? card.querySelector('.btn-verify') : null;
+    const config = puzzleConfigs[id];
+    if (!config) return;
+
+    solvedPuzzles.add(id);
+    const valToShow = displayVal || config.expected[0];
+
+    if (feedback) {
+      feedback.textContent = `✓ Coordinate Authenticated [${valToShow}]`;
+      feedback.className = 'card-feedback success';
+    }
+    if (card) card.classList.add('solved');
+    if (badge) badge.textContent = 'SEAL ALIGNED';
+    if (input) {
+      input.value = valToShow;
+      input.disabled = true;
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'ALIGNED ✓';
+    }
+  }
+
+  function restoreSolvedPuzzles() {
+    try {
+      const stored = localStorage.getItem(SOLVED_STORAGE_KEY);
+      if (!stored) return;
+      const list = JSON.parse(stored);
+      if (Array.isArray(list) && list.length > 0) {
+        list.forEach(id => {
+          const numId = parseInt(id, 10);
+          if (puzzleConfigs[numId]) {
+            applySolvedState(numId);
+          }
+        });
+        [1, 2, 3, 4].forEach(s => updateSectorProgress(s, false));
+        updateOverallProgress();
+      }
+    } catch (e) {}
+  }
+
   // Verify Buttons Event Listeners
   document.querySelectorAll('.btn-verify').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -500,16 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const isCorrect = config.expected.some(exp => exp.toUpperCase() === rawVal);
 
     if (isCorrect) {
-      solvedPuzzles.add(id);
-      feedback.textContent = `✓ Coordinate Authenticated [${rawVal}]`;
-      feedback.className = 'card-feedback success';
-      card.classList.add('solved');
-      badge.textContent = 'SEAL ALIGNED';
-      input.disabled = true;
-      btn.disabled = true;
-      btn.textContent = 'ALIGNED ✓';
+      applySolvedState(id, rawVal);
+      saveSolvedPuzzles();
 
-      updateSectorProgress(config.sector);
+      updateSectorProgress(config.sector, true);
       updateOverallProgress();
 
       playChime(440 + (solvedPuzzles.size % 7) * 45, 0.2);
@@ -523,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function updateSectorProgress(sectorNum) {
+  function updateSectorProgress(sectorNum, playSound = true) {
     const sRing = sectorRings[sectorNum];
     if (!sRing) return;
 
@@ -552,7 +604,9 @@ document.addEventListener('DOMContentLoaded', () => {
         completedSectors.add(sectorNum);
         ringGroup.classList.remove('ring-dormant');
         ringGroup.classList.add('ring-unlocked');
-        playMechanicalLock(sectorNum);
+        if (playSound) {
+          playMechanicalLock(sectorNum);
+        }
       }
     }
   }
@@ -990,5 +1044,33 @@ document.addEventListener('DOMContentLoaded', () => {
       closeDeskModal();
     }
   });
+
+  // ==========================================
+  // 7. INITIALIZE PERSISTENT PROGRESS ON LOAD
+  // ==========================================
+  restoreSolvedPuzzles();
+
+  // If observer already unlocked master key previously, preserve vault state
+  if (localStorage.getItem(LOCKOUT_KEY)) {
+    if (masterPasscode) {
+      masterPasscode.value = BINARY_KEY;
+      masterPasscode.disabled = true;
+    }
+    if (btnUnlockMaster) {
+      btnUnlockMaster.disabled = true;
+    }
+    if (coreLight) {
+      coreLight.classList.remove('core-locked');
+      coreLight.classList.add('core-unlocked');
+    }
+  }
+
+  // Console helper for testing / resetting progress
+  window.resetPuzzleProgress = () => {
+    localStorage.removeItem(SOLVED_STORAGE_KEY);
+    localStorage.removeItem(LOCKOUT_KEY);
+    console.log('Progress reset. Reloading...');
+    location.reload();
+  };
 
 });

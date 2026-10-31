@@ -110,9 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3. VIDEO TRANSMISSION LOGIC
   // ==========================================
   const introVideo = document.getElementById('intro-video');
-  const videoFallback = document.getElementById('video-fallback');
   const videoNextWrapper = document.getElementById('video-next-wrapper');
-  const btnSimulateVideo = document.getElementById('btn-simulate-video');
 
   function revealMoveForward() {
     if (videoNextWrapper) {
@@ -123,14 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (introVideo) {
-    introVideo.addEventListener('loadeddata', () => {
-      if (videoFallback) videoFallback.classList.add('hidden');
-    });
-
-    introVideo.addEventListener('error', () => {
-      if (videoFallback) videoFallback.classList.remove('hidden');
-    });
-
     introVideo.addEventListener('ended', () => {
       revealMoveForward();
     });
@@ -144,7 +134,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Attempt video playback immediately with unmuted sound
+    // If opened on mobile, pause video playback so user sees the dedicated Talha guard
+    if (window.innerWidth <= 1024) {
+      introVideo.pause();
+      return;
+    }
+
+    // Attempt video playback immediately with unmuted sound (desktop/laptop)
     introVideo.muted = false;
     const playPromise = introVideo.play();
     if (playPromise !== undefined) {
@@ -157,23 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Unmute on first user interaction anywhere on the screen
     const unlockAudio = () => {
+      if (window.innerWidth <= 1024) return;
       if (introVideo && introVideo.muted) {
         introVideo.muted = false;
       }
     };
     ['click', 'pointerdown', 'touchstart', 'keydown'].forEach(evt => {
       document.addEventListener(evt, unlockAudio, { passive: true });
-    });
-  }
-
-  if (btnSimulateVideo) {
-    btnSimulateVideo.addEventListener('click', () => {
-      btnSimulateVideo.disabled = true;
-      btnSimulateVideo.textContent = 'Simulating Stream...';
-      setTimeout(() => {
-        btnSimulateVideo.textContent = 'Stream Completed';
-        revealMoveForward();
-      }, 1200);
     });
   }
 
