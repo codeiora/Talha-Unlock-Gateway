@@ -45,8 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
         this.audio = new Audio('assets/cosmic-tune.mp3');
         this.audio.loop = true;
       }
-      this.baseVolume = 0.28;
+      this.narrationVolume = 0.30; // Rich, aesthetic volume while voice is speaking (raised from 0.12)
+      this.ambientVolume = 0.45;   // Full ambient presence during gaps or idle
+      this.baseVolume = 0.35;      // Initial arrival volume
       this.audio.volume = this.baseVolume;
+      this.fadeAnimId = null;
       this.isMuted = localStorage.getItem('cosmic_tune_muted') === 'true';
     }
 
@@ -56,33 +59,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
     start() {
       if (this.isMuted || !this.audio) return;
-      this.audio.volume = this.baseVolume;
-      const playPromise = this.audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {});
+      if (!this.isPlaying) {
+        this.audio.volume = this.baseVolume;
+        const playPromise = this.audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {});
+        }
       }
     }
 
     stop() {
+      if (this.fadeAnimId) {
+        cancelAnimationFrame(this.fadeAnimId);
+        this.fadeAnimId = null;
+      }
       if (this.audio) {
         this.audio.pause();
       }
     }
 
     duck() {
-      // Settle background tune under voice narration
+      // Settle background tune under voice narration with aesthetic presence
       if (!this.audio || this.isMuted) return;
-      this.fadeTo(0.12, 800);
+      this.fadeTo(this.narrationVolume, 700);
     }
 
     swell() {
       // Swell background tune during narration gaps
       if (!this.audio || this.isMuted) return;
-      this.fadeTo(0.35, 1500);
+      this.fadeTo(this.ambientVolume, 1200);
     }
 
     fadeTo(targetVol, durationMs) {
       if (!this.audio) return;
+      if (this.fadeAnimId) {
+        cancelAnimationFrame(this.fadeAnimId);
+        this.fadeAnimId = null;
+      }
       const startVol = this.audio.volume;
       const startTime = performance.now();
       const step = (now) => {
@@ -90,10 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const progress = Math.min(elapsed / durationMs, 1);
         this.audio.volume = startVol + (targetVol - startVol) * progress;
         if (progress < 1 && !this.audio.paused) {
-          requestAnimationFrame(step);
+          this.fadeAnimId = requestAnimationFrame(step);
+        } else {
+          this.fadeAnimId = null;
         }
       };
-      requestAnimationFrame(step);
+      this.fadeAnimId = requestAnimationFrame(step);
     }
 
     setMuted(muted) {
@@ -138,12 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(loopTimer);
     loopTimer = null;
 
-    // Settle background tune to accompaniment level under voice
+    // Settle background tune to aesthetic accompaniment level under voice
     if (!cosmicTune.isPlaying) {
       cosmicTune.start();
-    } else {
-      cosmicTune.duck();
     }
+    cosmicTune.duck();
 
     if (narrationAudio) {
       try { narrationAudio.currentTime = 0; } catch (e) {}

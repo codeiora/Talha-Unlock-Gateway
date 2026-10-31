@@ -843,6 +843,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   btnUnlockMaster.addEventListener('click', () => {
+    // If already unlocked previously, open the portal / countdown directly
+    if (localStorage.getItem(LOCKOUT_KEY) || (coreLight && coreLight.classList.contains('core-unlocked'))) {
+      triggerBreachReveal();
+      return;
+    }
+
     const rawVal = masterPasscode.value.trim();
     // Normalize: strip whitespace and any leading '0b' or '0B'
     const normalizedVal = rawVal.replace(/\s+/g, '').replace(/^0b/i, '');
@@ -867,11 +873,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Trigger Grand Breach Modal / Overlay
       setTimeout(() => {
         triggerBreachReveal();
+        btnUnlockMaster.disabled = false;
+        btnUnlockMaster.textContent = 'OPEN GATEWAY';
       }, 1500);
 
     } else if (normalizedVal === '2810' || rawVal === '2810') {
       // Direct decimal 2810 entered! Acknowledge coordinate but remind about the riddle
-      masterFeedback.textContent = '⚠️ The recurring coordinate is recognized, but the machine rejects decimal numbers. Translate it into the Machine\'s Tongue.';
+      masterFeedback.textContent = '⚠️ The recurring coordinate is recognized, but the machine rejects decimal numbers.';
       masterFeedback.style.color = '#fbbf24';
       playChime(370, 0.25);
       masterPasscode.style.borderColor = '#fbbf24';
@@ -879,7 +887,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } else if (!/^[01]+$/.test(normalizedVal)) {
       // User entered characters other than 0 and 1
-      masterFeedback.textContent = '✗ Key rejected. The Machine\'s Tongue recognizes only two fundamental states.';
+      masterFeedback.textContent = '✗ Key rejected. Only two fundamental states are recognized.';
       masterFeedback.style.color = '#f43f5e';
       playErrorSound();
       masterPasscode.style.borderColor = '#f43f5e';
@@ -956,7 +964,8 @@ document.addEventListener('DOMContentLoaded', () => {
       masterPasscode.disabled = true;
     }
     if (btnUnlockMaster) {
-      btnUnlockMaster.disabled = true;
+      btnUnlockMaster.disabled = false;
+      btnUnlockMaster.textContent = 'OPEN GATEWAY';
     }
     if (coreLight) {
       coreLight.classList.remove('core-locked');

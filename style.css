@@ -1352,9 +1352,17 @@ body.page-gateway-body {
   border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 9999px;
   font-family: var(--font-macondo);
-  font-size: 0.88rem;
+  font-size: 0.92rem;
+  font-weight: 700;
   color: var(--gold-bright);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.notebook-badge strong {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
 }
 
 .codex-tag {
@@ -1382,6 +1390,12 @@ body.page-gateway-body {
   line-height: 1.6;
   position: relative;
   z-index: 2;
+}
+
+.notebook-subtitle strong {
+  color: var(--gold-bright);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.45);
 }
 
 /* Inscription bar below subtitle */
@@ -2053,10 +2067,17 @@ body.page-gateway-body {
   white-space: nowrap;
 }
 
-.btn-master:hover {
+.btn-master:hover:not(:disabled) {
   background: linear-gradient(135deg, #fef08a 0%, #f59e0b 100%);
   box-shadow: 0 0 40px rgba(251, 191, 36, 0.9);
   transform: translateY(-2px);
+}
+
+.btn-master:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .master-feedback {
