@@ -43,8 +43,8 @@
        ======================================================== -->
   <header class="gateway-header">
     <div class="header-left">
-      <a href="index.html" class="btn-back-nav">
-        <span>← Back to Transmission</span>
+      <a href="talha.html" class="btn-back-nav">
+        <span>← Back to Induction</span>
       </a>
       <span class="system-divider">|</span>
       <div class="header-directive">
@@ -54,10 +54,10 @@
       </div>
     </div>
     <div class="header-right">
+      <span class="badge-seals" id="badge-seals">SEALS ENGAGED: 0 / 28</span>
       <span class="badge-marks" id="badge-marks">MARKS: 0.00 / 10.00</span>
-      <span class="badge-seals" id="badge-seals">SEALS ENGAGED: 0 / 4</span>
-      <!-- Ambient Sound & SFX Audio Toggle Inside Header -->
-      <button id="audio-toggle" class="audio-toggle header-audio" aria-label="Toggle Sound" title="Toggle Sound">
+      <!-- Ambient Cosmic Tune Toggle Inside Header -->
+      <button id="audio-toggle" class="audio-toggle header-audio" aria-label="Toggle Cosmic Tune" title="Toggle Cosmic Tune">
         <svg id="sound-icon-on" class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -164,7 +164,7 @@
                 <span>DECRYPTION PROTOCOL // 4 SECTORS • 28 CHAMBERS</span>
               </div>
               <div class="header-actions">
-                <span class="codex-tag">FREQUENCY 28-10</span>
+                <span class="codex-tag">QUANTUM ENCRYPTED</span>
                 <button id="btn-inspect-desk" class="btn-inspect-desk" title="Inspect Observer's Study & Field Notes">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -177,7 +177,7 @@
             <h2 class="notebook-title">The Observer's Codex</h2>
             <p class="notebook-subtitle">
               Solve the 28 cosmic equations across 4 astrophysical sectors to accumulate 10.00 marks.
-              Notice how the fundamental laws across every corner of the cosmos collapse onto variations of <strong>28-10</strong>.
+              Notice how the fundamental laws across every corner of the cosmos reveal a mysterious recurring harmonic across your solutions.
             </p>
             <div class="codex-inscription-bar">
               <span class="inscription-quote">“Same sky. Different place. Same dream.”</span>
@@ -1102,18 +1102,62 @@
           <div class="master-vault-card" id="master-vault-card">
             <div class="master-header">
               <span class="master-icon">✦</span>
-              <span class="master-title">FINAL DECRYPTION // MASTER FREQUENCY</span>
+              <span class="master-title">FINAL DECRYPTION // THE MACHINE'S CIPHER</span>
             </div>
-            <p class="master-instruction">
-              Look closely at the coordinates you have unlocked across all 28 chambers. 
-              The cosmic laws converge on a singular recurring sequence: <strong>2810</strong>. 
-              <strong>Strip away the decimal boundaries</strong> to extract the 4-digit master key:
-            </p>
+
+            <div class="riddle-container">
+              <div class="riddle-scroll">
+                <p class="riddle-line riddle-lead">
+                  “Throughout the twenty-eight cosmic chambers, a shadow walked beside you in disguise.”
+                </p>
+                <div class="riddle-poem">
+                  <p class="poem-line"><em>“I possess no alphabet of twenty-six,</em></p>
+                  <p class="poem-line"><em>Nor do I count from zero up to nine.</em></p>
+                  <p class="poem-line"><em>In my domain, there exists only Light and Void, On and Off, True and False.”</em></p>
+                </div>
+                <p class="riddle-line riddle-climax">
+                  Discover the recurring coordinate from your journey, and speak it in the <strong>Machine's Tongue</strong> to awaken the core.
+                </p>
+              </div>
+            </div>
+
             <div class="master-input-row">
-              <input type="password" maxlength="4" id="master-passcode" placeholder="••••" autocomplete="off">
+              <input type="text" maxlength="24" id="master-passcode" placeholder="Enter decryption key..." autocomplete="off" spellcheck="false">
               <button id="btn-unlock-master" class="btn-master">BREACH GATEWAY</button>
             </div>
             <div id="master-feedback" class="master-feedback"></div>
+
+            <!-- COLLAPSIBLE HINT / CLUE DRAWER (CODEX ENIGMA) -->
+            <div class="master-clues-wrapper">
+              <button type="button" id="btn-toggle-clues" class="btn-clues-toggle" aria-expanded="false">
+                <span class="clue-btn-icon">🔮</span>
+                <span class="clue-btn-label">Need a hint to solve the cipher? Tap to open Codex Enigma</span>
+                <span class="clue-btn-arrow" id="clue-arrow">▼</span>
+              </button>
+              <div id="master-clues-drawer" class="master-clues-drawer hidden">
+                <div class="clue-item">
+                  <div class="clue-title"><span class="clue-num">HINT 01</span> // THE RECURRING COORDINATE</div>
+                  <p class="clue-text">
+                    Look back at the answers across your solved chambers. 
+                    If you disregard decimal points and measurement units, what 4-digit number quietly repeated throughout all sectors?
+                  </p>
+                </div>
+                <div class="clue-item">
+                  <div class="clue-title"><span class="clue-num">HINT 02</span> // THE MACHINE'S TONGUE</div>
+                  <p class="clue-text">
+                    The Stargate core does not think in human counting. 
+                    It communicates in an ancient logic that knows only two possible states.
+                  </p>
+                </div>
+                <div class="clue-item">
+                  <div class="clue-title"><span class="clue-num">HINT 03</span> // THE CONVERSION</div>
+                  <p class="clue-text">
+                    Convert the 4-digit coordinate you discovered into that two-state machine language. 
+                    The resulting key will be a 12-character sequence.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -1132,7 +1176,7 @@
     <div class="breach-burst-light"></div>
 
     <!-- ========================================================
-         PRANK SCREEN: AI DETECTED & 48-HOUR RESTRICTION LOCKOUT
+         PRANK SCREEN: AI DETECTED & 24-HOUR RESTRICTION LOCKOUT
          (COZY CELESTIAL AMBIANCE & 100% ENGLISH TRANSMISSION)
          ======================================================== -->
     <div id="prank-lockout-content" class="breach-content prank-lockout-content">
@@ -1150,14 +1194,14 @@
 
       <div class="cozy-restriction-badge">
         <span class="pulse-dot golden"></span>
-        <span>48-HOUR CELESTIAL RECALIBRATION IN EFFECT</span>
+        <span>24-HOUR CELESTIAL RECALIBRATION IN EFFECT</span>
       </div>
 
-      <!-- Live 48-Hour Digital Countdown Clock (Warm Amber & Gold) -->
+      <!-- Live 24-Hour Digital Countdown Clock (Warm Amber & Gold) -->
       <div class="lockout-timer-widget">
         <div class="digital-clock" id="digital-clock">
           <div class="clock-unit">
-            <span class="clock-val" id="timer-hours">48</span>
+            <span class="clock-val" id="timer-hours">24</span>
             <span class="clock-lbl">HOURS</span>
           </div>
           <span class="clock-sep">:</span>
@@ -1195,7 +1239,7 @@
         <button id="btn-revisit-codex" class="btn-ghost-lockout" title="Return to Codex Chambers">
           <span>← Re-examine Equations</span>
         </button>
-        <a href="index.html" class="btn-ghost-lockout" title="Replay Video Transmission">
+        <a href="transmission.html" class="btn-ghost-lockout" title="Replay Video Transmission">
           <span>Replay Transmission ↺</span>
         </a>
       </div>

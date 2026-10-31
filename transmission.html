@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Unlock Gateway // Protocol 2810</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400&family=Eater&family=Henny+Penny&family=Macondo&family=Mansalva&family=Mystery+Quest&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-induction-body">
+
+  <!-- ========================================================
+       SCREEN GUARD (DESKTOP & LAPTOP ONLY)
+       ======================================================== -->
+  <div id="screen-guard" class="screen-guard">
+    <div class="guard-card">
+      <div class="guard-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      </div>
+      <div class="guard-tag">[ DESKTOP FREQUENCY REQUIRED ]</div>
+      <h2 class="guard-title">Open in your PC or Laptop</h2>
+      <p class="guard-desc">
+        This transmission contains multi-dimensional coordinate grids and quantum calculations engineered exclusively for a widescreen display.
+      </p>
+      <p class="guard-sub">Please switch to your computer or laptop to access the gateway.</p>
+    </div>
+  </div>
+
+  <!-- Background Canvas for Atmospheric Starfield & Nebulae -->
+  <canvas id="cosmic-canvas"></canvas>
+
+  <!-- ========================================================
+       STAGE 1: THE VIDEO TRANSMISSION
+       ======================================================== -->
+  <section id="view-video" class="scene active">
+    <div class="video-container">
+      <!-- Video Element: Galaxy Transmission Video -->
+      <video id="intro-video" playsinline preload="auto" autoplay>
+        <source src="assets/galaxy.mp4" type="video/mp4">
+        <source src="assets/intro.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Fallback / Preview Card shown if video file is not yet placed -->
+      <div id="video-fallback" class="video-fallback">
+        <div class="radar-pulse"></div>
+        <p class="fallback-tag">[ TRANSMISSION READY ]</p>
+        <p class="fallback-text">Waiting for video stream: <code>assets/galaxy.mp4</code></p>
+        <button id="btn-simulate-video" class="btn-ghost">Simulate Video Playback</button>
+      </div>
+    </div>
+
+    <!-- Move Forward Button (Reveals when video ends) -->
+    <div id="video-next-wrapper" class="video-next-wrapper hidden">
+      <p class="transmission-ended-text">Transmission Complete</p>
+      <a href="talha.html" id="btn-move-forward" class="btn-grand link-btn">
+        <span>Move Forward</span>
+        <span class="btn-arrow">➔</span>
+      </a>
+    </div>
+  </section>
+
+  <script src="transmission.js"></script>
+</body>
+</html>

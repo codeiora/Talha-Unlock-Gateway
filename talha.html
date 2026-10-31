@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TALHA // Sector 28-10</title>
+
+  <!-- Google Fonts: Eater, Mansalva, Henny Penny, Mystery Quest, Macondo, Almendra, Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almendra:ital,wght@0,400;0,700;1,400&family=Eater&family=Henny+Penny&family=Macondo&family=Mansalva&family=Mystery+Quest&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-induction-body">
+
+  <!-- ========================================================
+       SCREEN GUARD (DESKTOP & LAPTOP ONLY)
+       ======================================================== -->
+  <div id="screen-guard" class="screen-guard">
+    <div class="guard-card">
+      <div class="guard-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+        </svg>
+      </div>
+      <div class="guard-tag">[ DESKTOP FREQUENCY REQUIRED ]</div>
+      <h2 class="guard-title">Open in your PC or Laptop</h2>
+      <p class="guard-desc">
+        This transmission contains multi-dimensional coordinate grids and quantum calculations engineered exclusively for a widescreen display.
+      </p>
+      <p class="guard-sub">Please switch to your computer or laptop to access the gateway.</p>
+    </div>
+  </div>
+
+  <!-- Background Canvas for Atmospheric Starfield & Nebulae -->
+  <canvas id="cosmic-canvas"></canvas>
+
+  <!-- ========================================================
+       STAGE 2: THE INDUCTION / TALHA REVEAL
+       ======================================================== -->
+  <section id="view-induction" class="scene active">
+    
+    <!-- Top Navigation: Back to Video Transmission -->
+    <div class="top-nav-bar">
+      <a href="transmission.html" id="btn-back-to-video" class="btn-back-nav">
+        <span>← Replay Transmission</span>
+      </a>
+    </div>
+
+    <!-- Ambient Cosmic Tune & Voice Toggle -->
+    <button id="audio-toggle" class="audio-toggle" aria-label="Toggle Sound & Narration" title="Toggle Sound & Narration">
+      <svg id="sound-icon-on" class="sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      </svg>
+      <svg id="sound-icon-off" class="sound-icon hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <line x1="23" y1="9" x2="17" y2="15"></line>
+        <line x1="17" y1="9" x2="23" y2="15"></line>
+      </svg>
+    </button>
+
+    <!-- Optional High-Quality AI Voice Audio Element (Auto-falls back to Web Speech API if file absent) -->
+    <audio id="induction-voice-audio" preload="auto">
+      <source src="assets/talha-narration.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Cinematic Event Horizon Ambient Artwork Behind TALHA -->
+    <div class="event-horizon-backdrop" style="background-image: url('assets/event-horizon.png');"></div>
+    <div class="event-horizon-overlay"></div>
+
+    <!-- Ambient Golden Nebulae on Empty Lateral Flanks -->
+    <div class="side-nebula nebula-left" aria-hidden="true"></div>
+    <div class="side-nebula nebula-right" aria-hidden="true"></div>
+
+    <div class="induction-content">
+      <div class="protocol-badge">
+        <span class="pulse-dot"></span>
+        <span>FREQUENCY INTERCEPT // QUANTUM GATEWAY</span>
+      </div>
+
+      <!-- The Grand Name: TALHA in Eater Font with Intense Golden Aura Glow -->
+      <h1 class="talha-title">TALHA</h1>
+
+      <!-- Curious & Philosophical Induction Message (Dynamically Spoken by AI Voice) -->
+      <div class="induction-card">
+        <p class="curious-lead">Some mysteries of the universe can only be solved by those who observe carefully.</p>
+        <p class="curious-body">
+          A mysterious, locked door stands before you. To unlock it, you must use logic, careful observation, and the basic laws of nature.
+        </p>
+        <p class="curious-quote">
+          “Truth is never hidden. It waits for the right person to find it. Solve the puzzles, and the door will open.”
+        </p>
+      </div>
+
+      <!-- DIRECT LINK TO SEPARATE MATH PAGE (gateway.html) -->
+      <a href="gateway.html" class="btn-grand golden-pulse link-btn">
+        <span>Initiate Decryption Protocol</span>
+        <span class="btn-arrow">➔</span>
+      </a>
+    </div>
+  </section>
+
+  <script src="talha.js"></script>
+</body>
+</html>

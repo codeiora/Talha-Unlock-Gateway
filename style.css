@@ -797,15 +797,21 @@ html, body {
 /* ========================================================
    PAGE: GATEWAY.HTML (Split-Screen & Truly Sticky Layout)
    ======================================================== */
-.page-gateway-body {
-  padding-top: 0.5rem;
-  overflow-x: clip;
+body.page-gateway-body {
+  height: 100vh;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0.45rem 1.4rem 0.6rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .gateway-header {
-  position: sticky !important;
-  top: 0.5rem !important;
-  z-index: 100 !important;
+  position: relative !important;
+  top: 0 !important;
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -813,10 +819,11 @@ html, body {
   background: rgba(7, 10, 24, 0.94);
   border: 1px solid rgba(245, 158, 11, 0.35);
   border-radius: 12px;
-  margin: 0.35rem 1.5rem 1rem 1.5rem;
+  margin: 0 0 0.55rem 0;
   backdrop-filter: blur(20px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(245, 158, 11, 0.08);
   flex-wrap: nowrap;
+  z-index: 100;
 }
 
 .header-left {
@@ -941,6 +948,8 @@ html, body {
   padding: 0.22rem 0.65rem;
   border-radius: 9999px;
   letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
   white-space: nowrap;
   line-height: 1.2;
 }
@@ -949,25 +958,32 @@ html, body {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 1560px;
-  margin: 0 auto;
-  padding: 0 2rem 3rem 2rem;
+  max-width: 100%;
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .split-layout {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
   display: grid;
-  grid-template-columns: 460px 1fr;
-  gap: 2.2rem;
-  align-items: start;
+  grid-template-columns: clamp(360px, 27vw, 440px) 1fr;
+  gap: 1.4rem;
+  align-items: stretch;
 }
 
 /* ========================================================
-   LEFT PANE: TRULY STICKY VISUAL STARGATE LOCK (BELOW HEADER)
+   LEFT PANE: FULL-HEIGHT VISUAL STARGATE LOCK (RESPONSIVE VIEWPORT)
    ======================================================== */
 .left-pane {
-  position: sticky !important;
-  top: 5.5rem !important; /* Neatly sticks right below the sticky header */
-  align-self: start !important;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch !important;
   z-index: 25;
   display: flex;
   flex-direction: column;
@@ -977,8 +993,8 @@ html, body {
   overflow: hidden;
   background: linear-gradient(145deg, rgba(13, 18, 36, 0.88) 0%, rgba(8, 12, 26, 0.94) 50%, rgba(16, 14, 28, 0.92) 100%);
   border: 1px solid rgba(245, 158, 11, 0.32);
-  border-radius: 24px;
-  padding: 1.6rem 1.4rem;
+  border-radius: 20px;
+  padding: 1.2rem 1.4rem;
   backdrop-filter: blur(24px);
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(245, 158, 11, 0.1);
 }
@@ -1000,7 +1016,7 @@ html, body {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 24px;
+  border-radius: 20px;
   background: radial-gradient(circle at 50% 25%, rgba(251, 191, 36, 0.12) 0%, transparent 60%),
               radial-gradient(circle at 50% 80%, rgba(56, 189, 248, 0.08) 0%, transparent 60%);
   pointer-events: none;
@@ -1012,24 +1028,28 @@ html, body {
   z-index: 1;
   width: 100%;
   max-width: 420px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-evenly;
 }
 
 .stargate-stage {
   position: relative;
-  width: 100%;
+  width: clamp(230px, 48vh, 390px);
+  max-width: 100%;
   aspect-ratio: 1 / 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 1;
 }
 
 .vortex-frame {
   position: absolute;
-  width: 360px;
-  height: 360px;
+  width: 88%;
+  height: 88%;
   border-radius: 50%;
   overflow: hidden;
   pointer-events: none;
@@ -1172,13 +1192,14 @@ html, body {
 }
 
 .lock-readout {
-  margin-top: 1.2rem;
+  margin-top: 0.4rem;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .readout-dial {
@@ -1208,18 +1229,49 @@ html, body {
 }
 
 /* ========================================================
-   RIGHT PANE: THE OBSERVER'S NOTEBOOK
+   RIGHT PANE: INDEPENDENT COSMIC SCROLLING NOTEBOOK
    ======================================================== */
 .right-pane {
+  height: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.4rem;
+  padding-right: 0.75rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(245, 158, 11, 0.6) rgba(10, 14, 30, 0.45);
+}
+
+.right-pane::-webkit-scrollbar {
+  width: 8px;
+}
+
+.right-pane::-webkit-scrollbar-track {
+  background: rgba(10, 14, 30, 0.45);
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 158, 11, 0.12);
+}
+
+.right-pane::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.7) 0%, rgba(217, 119, 6, 0.45) 100%);
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+}
+
+.right-pane::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.95) 0%, rgba(245, 158, 11, 0.7) 100%);
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.45);
 }
 
 .notebook-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.4rem;
+  padding-bottom: 0;
 }
 
 /* SECTION HEADLINE CARD (The Observer's Study Header) */
@@ -1836,6 +1888,7 @@ html, body {
   position: relative;
   overflow: hidden;
   margin-top: 1rem;
+  margin-bottom: 0;
   background: linear-gradient(135deg, rgba(30, 20, 10, 0.88), rgba(15, 20, 38, 0.92)),
               url('assets/event-horizon.png') center 48% / cover no-repeat;
   border: 2px solid var(--gold-bright);
@@ -1873,6 +1926,77 @@ html, body {
   color: var(--gold-light);
 }
 
+/* MASTER VAULT RIDDLE BOX */
+.riddle-container {
+  background: rgba(10, 16, 28, 0.75);
+  border-left: 3px solid var(--gold-bright);
+  border-radius: 0 12px 12px 0;
+  padding: 1.1rem 1.4rem;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+}
+
+.riddle-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.riddle-line {
+  font-family: var(--font-macondo);
+  font-size: 1.14rem;
+  color: #e2e8f0;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.riddle-lead {
+  font-size: 1.2rem;
+  color: #fef08a;
+  letter-spacing: 0.015em;
+  font-style: italic;
+}
+
+.riddle-poem {
+  margin: 0.35rem 0;
+  padding: 0.75rem 1.1rem;
+  background: rgba(0, 0, 0, 0.45);
+  border-left: 2px solid var(--gold-bright);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.poem-line {
+  font-family: var(--font-macondo);
+  font-size: 1.08rem;
+  color: #fef08a;
+  line-height: 1.5;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.riddle-hl {
+  color: var(--gold-bright);
+  font-weight: 600;
+}
+
+.riddle-climax {
+  color: #cbd5e1;
+  font-size: 1.08rem;
+  border-top: 1px dashed rgba(245, 158, 11, 0.3);
+  padding-top: 0.6rem;
+  margin-top: 0.2rem;
+}
+
+.riddle-climax strong {
+  color: #34d399;
+  letter-spacing: 0.12em;
+  font-family: var(--font-mono);
+  font-size: 1.15em;
+}
+
 .master-instruction {
   font-family: var(--font-macondo);
   font-size: 1.15rem;
@@ -1898,10 +2022,17 @@ html, body {
   padding: 0.85rem 1.2rem;
   color: var(--gold-light);
   font-family: var(--font-mono);
-  font-size: 1.6rem;
-  letter-spacing: 0.6em;
+  font-size: 1.22rem;
+  letter-spacing: 0.16em;
   text-align: center;
   box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.25);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.master-input-row input::placeholder {
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: rgba(251, 191, 36, 0.45);
 }
 
 .master-input-row input:focus {
@@ -1922,6 +2053,7 @@ html, body {
   cursor: pointer;
   box-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
   transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .btn-master:hover {
@@ -1932,8 +2064,116 @@ html, body {
 
 .master-feedback {
   font-family: var(--font-mono);
-  font-size: 0.88rem;
-  min-height: 1.2rem;
+  font-size: 0.9rem;
+  min-height: 1.3rem;
+  line-height: 1.45;
+  transition: all 0.3s ease;
+}
+
+/* MASTER VAULT CLUES & TRANSMISSION DRAWER */
+.master-clues-wrapper {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.btn-clues-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(245, 158, 11, 0.07);
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  border-radius: 8px;
+  padding: 0.65rem 1.1rem;
+  color: var(--gold-light);
+  font-family: var(--font-macondo);
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-clues-toggle:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.clue-btn-icon {
+  font-size: 1.15rem;
+}
+
+.clue-btn-label {
+  flex: 1;
+  text-align: left;
+}
+
+.clue-btn-arrow {
+  font-size: 0.8rem;
+  color: var(--gold-bright);
+  transition: transform 0.25s ease;
+}
+
+.clue-btn-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.master-clues-drawer {
+  background: rgba(10, 14, 26, 0.96);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.master-clues-drawer.hidden {
+  display: none;
+}
+
+.clue-item {
+  border-left: 3px solid var(--gold-bright);
+  padding-left: 0.85rem;
+}
+
+.clue-title {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--gold-bright);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.clue-num {
+  font-weight: 700;
+  color: #fef08a;
+}
+
+.clue-text {
+  font-family: var(--font-macondo);
+  font-size: 1rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.clue-text strong {
+  color: var(--gold-bright);
+}
+
+.clue-text code {
+  font-family: var(--font-mono);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  font-size: 0.92em;
 }
 
 /* ========================================================

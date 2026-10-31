@@ -6,10 +6,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ==========================================
-  // 1. WEB AUDIO API SYNTHESIZER
+  // 1. WEB AUDIO API SYNTHESIZER & COSMIC TUNE
   // ==========================================
   let audioCtx = null;
-  let audioEnabled = true;
 
   function initAudio() {
     if (!audioCtx) {
@@ -19,28 +18,209 @@ document.addEventListener('DOMContentLoaded', () => {
     if (audioCtx.state === 'suspended') {
       audioCtx.resume();
     }
+    return audioCtx;
   }
+
+  // Procedural Cosmic Ambient Tune Generator (Web Audio API)
+  class CosmicAmbientEngine {
+    constructor(getAudioCtx) {
+      this.getAudioCtx = getAudioCtx;
+      this.isPlaying = false;
+      this.masterGain = null;
+      this.nodes = [];
+      this.sparkleTimer = null;
+      this.isMuted = localStorage.getItem('cosmic_tune_muted') === 'true';
+    }
+
+    start() {
+      if (this.isPlaying || this.isMuted) return;
+      const ctx = this.getAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      this.isPlaying = true;
+      const now = ctx.currentTime;
+
+      // Master gain for the ambient tune (Smooth fade-in)
+      this.masterGain = ctx.createGain();
+      this.masterGain.gain.setValueAtTime(0.0001, now);
+      this.masterGain.gain.linearRampToValueAtTime(0.09, now + 2.5);
+      this.masterGain.connect(ctx.destination);
+
+      // Lowpass resonant filter for celestial warmth
+      const padFilter = ctx.createBiquadFilter();
+      padFilter.type = 'lowpass';
+      padFilter.frequency.setValueAtTime(420, now);
+      padFilter.Q.setValueAtTime(1.4, now);
+      padFilter.connect(this.masterGain);
+
+      // 1. Deep Sub-Space Resonant Drone (55Hz / A1 & 110Hz / A2)
+      const droneFreqs = [55.0, 55.4, 110.0, 110.3];
+      droneFreqs.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = idx < 2 ? 'sine' : 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        g.gain.setValueAtTime(idx < 2 ? 0.32 : 0.16, now);
+        osc.connect(g);
+        g.connect(padFilter);
+        osc.start(now);
+        this.nodes.push(osc, g);
+      });
+
+      // 2. Celestial Harmonic Chord (A3, E4, B4, C#5 - open cosmic ether chord)
+      const celestialChord = [220.0, 329.63, 493.88, 554.37];
+      celestialChord.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        const detune = (idx % 2 === 0 ? 1 : -1) * 3;
+        osc.detune.setValueAtTime(detune, now);
+        g.gain.setValueAtTime(0.11, now);
+        osc.connect(g);
+        g.connect(padFilter);
+        osc.start(now);
+        this.nodes.push(osc, g);
+      });
+
+      // 3. Slow Cosmic LFO (Breathing Nebulae Filter Sweeps ~18s cycle)
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.type = 'sine';
+      lfo.frequency.setValueAtTime(0.055, now);
+      lfoGain.gain.setValueAtTime(180, now);
+      lfo.connect(padFilter.frequency);
+      lfo.start(now);
+      this.nodes.push(lfo, lfoGain, padFilter);
+
+      // 4. Starlight Shimmer / Pulsar Harmonics (Twinkling celestial dust)
+      const sparkleNotes = [880.0, 987.77, 1108.73, 1318.51, 1479.98, 1661.22];
+      const triggerSparkle = () => {
+        if (!this.isPlaying) return;
+        const t = ctx.currentTime;
+        const note = sparkleNotes[Math.floor(Math.random() * sparkleNotes.length)];
+
+        const spkOsc = ctx.createOscillator();
+        const spkGain = ctx.createGain();
+        spkOsc.type = 'sine';
+        spkOsc.frequency.setValueAtTime(note, t);
+
+        spkGain.gain.setValueAtTime(0.0001, t);
+        spkGain.gain.linearRampToValueAtTime(0.035, t + 0.9);
+        spkGain.gain.exponentialRampToValueAtTime(0.0001, t + 4.5);
+
+        spkOsc.connect(spkGain);
+        spkGain.connect(this.masterGain);
+
+        spkOsc.start(t);
+        spkOsc.stop(t + 4.8);
+
+        const nextDelay = 6000 + Math.random() * 4000;
+        this.sparkleTimer = setTimeout(triggerSparkle, nextDelay);
+      };
+
+      this.sparkleTimer = setTimeout(triggerSparkle, 3500);
+    }
+
+    stop() {
+      if (!this.isPlaying) return;
+      this.isPlaying = false;
+      clearTimeout(this.sparkleTimer);
+
+      if (this.masterGain && this.getAudioCtx()) {
+        const ctx = this.getAudioCtx();
+        const now = ctx.currentTime;
+        this.masterGain.gain.linearRampToValueAtTime(0.0001, now + 1.2);
+
+        setTimeout(() => {
+          this.nodes.forEach(n => {
+            try {
+              if (n.stop) n.stop();
+              if (n.disconnect) n.disconnect();
+            } catch (e) {}
+          });
+          this.nodes = [];
+          if (this.masterGain) {
+            try { this.masterGain.disconnect(); } catch (e) {}
+            this.masterGain = null;
+          }
+        }, 1300);
+      }
+    }
+
+    setMuted(muted) {
+      this.isMuted = muted;
+      localStorage.setItem('cosmic_tune_muted', muted ? 'true' : 'false');
+      if (muted) {
+        this.stop();
+      } else {
+        this.start();
+      }
+    }
+
+    toggle() {
+      this.setMuted(!this.isMuted);
+      return this.isMuted;
+    }
+  }
+
+  const cosmicTune = new CosmicAmbientEngine(initAudio);
 
   const audioToggle = document.getElementById('audio-toggle');
   const soundIconOn = document.getElementById('sound-icon-on');
   const soundIconOff = document.getElementById('sound-icon-off');
 
-  audioToggle.addEventListener('click', () => {
-    audioEnabled = !audioEnabled;
-    if (audioEnabled) {
-      initAudio();
-      soundIconOn.classList.remove('hidden');
-      soundIconOff.classList.add('hidden');
-      playChime(587.33, 0.15);
-    } else {
+  function updateToggleUI() {
+    if (!audioToggle) return;
+    if (cosmicTune.isMuted) {
       soundIconOn.classList.add('hidden');
       soundIconOff.classList.remove('hidden');
+      audioToggle.setAttribute('title', 'Unmute Cosmic Tune');
+      audioToggle.setAttribute('aria-label', 'Unmute Cosmic Tune');
+    } else {
+      soundIconOn.classList.remove('hidden');
+      soundIconOff.classList.add('hidden');
+      audioToggle.setAttribute('title', 'Mute Cosmic Tune');
+      audioToggle.setAttribute('aria-label', 'Mute Cosmic Tune');
     }
+  }
+
+  if (audioToggle) {
+    updateToggleUI();
+    audioToggle.addEventListener('click', () => {
+      initAudio();
+      cosmicTune.toggle();
+      updateToggleUI();
+    });
+  }
+
+  // Auto-start cosmic tune on first user interaction if not muted
+  const startTuneOnGesture = () => {
+    initAudio();
+    if (!cosmicTune.isMuted) {
+      cosmicTune.start();
+    }
+  };
+  ['click', 'pointerdown', 'keydown', 'scroll', 'wheel'].forEach(evt => {
+    document.addEventListener(evt, startTuneOnGesture, { once: true, passive: true, capture: true });
   });
+
+  // Try immediate start if AudioContext is already unlocked
+  try {
+    if (!cosmicTune.isMuted) {
+      cosmicTune.start();
+    }
+  } catch(e) {}
+
+  // ========================================================
+  // INTERACTIVE SFX - ALWAYS ACTIVE (Not blocked by tune mute)
+  // ========================================================
 
   // Sound: Harmonic Chime / Lock Engaged
   function playMechanicalLock(level = 1) {
-    if (!audioEnabled) return;
     initAudio();
     const now = audioCtx.currentTime;
 
@@ -75,7 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function playChime(freq = 440, duration = 0.2) {
-    if (!audioEnabled) return;
     initAudio();
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
@@ -91,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function playErrorSound() {
-    if (!audioEnabled) return;
     initAudio();
     const now = audioCtx.currentTime;
     const osc = audioCtx.createOscillator();
@@ -108,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function playCosmicRecalibrationSound() {
-    if (!audioEnabled) return;
     initAudio();
     const now = audioCtx.currentTime;
 
@@ -130,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function playPortalBreachSound() {
-    if (!audioEnabled) return;
     initAudio();
     const now = audioCtx.currentTime;
 
@@ -315,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const config = puzzleConfigs[id];
 
     if (!rawVal) {
-      feedback.textContent = 'Please enter a numerical value.';
+      feedback.textContent = 'Please enter a coordinate value.';
       feedback.className = 'card-feedback error';
       playErrorSound();
       return;
@@ -338,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       playChime(440 + (solvedPuzzles.size % 7) * 45, 0.2);
     } else {
-      feedback.textContent = '✗ Equation mismatch. Notice the 28-10 frequency and re-check.';
+      feedback.textContent = '✗ Coordinate mismatch. Re-verify your calculation and units.';
       feedback.className = 'card-feedback error';
       playErrorSound();
       card.style.transform = 'translateX(-4px)';
@@ -389,12 +565,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     readoutPercent.textContent = `${pct}%`;
     
+    if (badgeSeals) {
+      badgeSeals.textContent = `SEALS ENGAGED: ${totalSolved} / 28`;
+    }
+
     if (badgeMarks) {
       badgeMarks.textContent = `MARKS: ${marksDisplay} / 10.00`;
-    }
-    
-    if (badgeSeals) {
-      badgeSeals.textContent = `SEALS ENGAGED: ${completedSectors.size} / 4`;
     }
 
     if (systemStatus) {
@@ -500,10 +676,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const timerSeconds = document.getElementById('timer-seconds');
   const timerProgressFill = document.getElementById('timer-progress-fill');
 
-  const LOCKOUT_KEY = 'talha_gateway_lockout_active';
-  // Clear old testing timestamp so lockout countdown starts completely fresh at 48:00:00
+  const LOCKOUT_KEY = 'talha_gateway_lockout_24h';
+  // Clear old testing timestamp so lockout countdown starts completely fresh at 24:00:00
   localStorage.removeItem('talha_lockout_timestamp');
-  const LOCKOUT_HOURS = 48;
+  localStorage.removeItem('talha_gateway_lockout_active');
+  const LOCKOUT_HOURS = 24;
   const LOCKOUT_DURATION_MS = LOCKOUT_HOURS * 60 * 60 * 1000;
   let countdownInterval = null;
   let isPrankActive = true;
@@ -542,7 +719,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (timerProgressFill) timerProgressFill.style.width = '0%';
         if (countdownInterval) clearInterval(countdownInterval);
 
-        // 48 hours have finished! Grant access to the Real Sanctuary!
+        // 24 hours have finished! Grant access to the Real Sanctuary!
         isPrankActive = false;
         showRealSanctuaryView();
         return;
@@ -599,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
     breachModal.classList.remove('hidden');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Check if the 48 hours have passed
+    // Check if the 24 hours have passed
     if (isLockoutCompleted()) {
       // Cooldown complete! Direct access granted to Sanctuary!
       isPrankActive = false;
@@ -655,7 +832,7 @@ document.addEventListener('DOMContentLoaded', () => {
   window.showPrankGateway = showPrankView;
   window.togglePrankMode = toggleSanctuaryView;
 
-  // Simulate passing time (e.g. simulateHoursPassed(1) or simulateHoursPassed(48))
+  // Simulate passing time (e.g. simulateHoursPassed(1) or simulateHoursPassed(24))
   window.simulateHoursPassed = function(hours) {
     let startTime = localStorage.getItem(LOCKOUT_KEY);
     if (!startTime) {
@@ -666,7 +843,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCountdownTimer();
     console.log(`✦ Simulated ${hours} hours passed. Time remaining updated!`);
     if (getRemainingLockoutMs() <= 0) {
-      console.log('✦ 48 hours completed! System automatically reveals Sanctuary.');
+      console.log('✦ 24 hours completed! System automatically reveals Sanctuary.');
       showRealSanctuaryView();
     }
   };
@@ -674,8 +851,37 @@ document.addEventListener('DOMContentLoaded', () => {
   window.resetLockoutTimer = function() {
     localStorage.removeItem(LOCKOUT_KEY);
     initCountdownTimer();
-    console.log('✦ 48-Hour Timer reset to fresh 48:00:00.');
+    console.log('✦ 24-Hour Timer reset to fresh 24:00:00.');
   };
+
+  // ==========================================
+  // MASTER FREQUENCY KEY: Binary of 2810 (0b101011111010)
+  // ==========================================
+  const BINARY_KEY = '101011111010';
+
+  // Master Clue Drawer Controls
+  const btnToggleClues = document.getElementById('btn-toggle-clues');
+  const masterCluesDrawer = document.getElementById('master-clues-drawer');
+  const clueArrow = document.getElementById('clue-arrow');
+
+  function openCluesDrawer() {
+    if (!masterCluesDrawer) return;
+    masterCluesDrawer.classList.remove('hidden');
+    if (btnToggleClues) btnToggleClues.setAttribute('aria-expanded', 'true');
+    if (clueArrow) clueArrow.classList.add('rotated');
+  }
+
+  function toggleCluesDrawer() {
+    if (!masterCluesDrawer) return;
+    const isHidden = masterCluesDrawer.classList.toggle('hidden');
+    if (btnToggleClues) btnToggleClues.setAttribute('aria-expanded', !isHidden);
+    if (clueArrow) clueArrow.classList.toggle('rotated', !isHidden);
+    playChime(520, 0.12);
+  }
+
+  if (btnToggleClues) {
+    btnToggleClues.addEventListener('click', toggleCluesDrawer);
+  }
 
   masterPasscode.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
@@ -684,14 +890,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   btnUnlockMaster.addEventListener('click', () => {
-    const val = masterPasscode.value.trim();
+    const rawVal = masterPasscode.value.trim();
+    // Normalize: strip whitespace and any leading '0b' or '0B'
+    const normalizedVal = rawVal.replace(/\s+/g, '').replace(/^0b/i, '');
 
-    if (val === '2810') {
+    if (normalizedVal === BINARY_KEY) {
       if (isLockoutCompleted()) {
-        masterFeedback.textContent = '✦ 48-HR RESTRICTION EXPIRED. FREQUENCY 2810 ACCEPTED! COLLAPSING THE VEIL...';
+        masterFeedback.textContent = '✦ THE MACHINE YIELDS! Frequency resonance verified. Collapsing the veil...';
         masterFeedback.style.color = '#34d399';
       } else {
-        masterFeedback.textContent = '✦ MASTER FREQUENCY ACCEPTED: 2810. SCANNING OBSERVATION RECORD...';
+        masterFeedback.textContent = '✦ THE MACHINE YIELDS! Primal harmony verified. Breaching the gateway...';
         masterFeedback.style.color = '#34d399';
       }
       masterPasscode.disabled = true;
@@ -708,8 +916,27 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerBreachReveal();
       }, 1500);
 
+    } else if (normalizedVal === '2810' || rawVal === '2810') {
+      // Direct decimal 2810 entered! Acknowledge coordinate but remind about the riddle
+      masterFeedback.textContent = '⚠️ The recurring coordinate is recognized, but the machine rejects decimal numbers. Translate it into the Machine\'s Tongue.';
+      masterFeedback.style.color = '#fbbf24';
+      playChime(370, 0.25);
+      masterPasscode.style.borderColor = '#fbbf24';
+      openCluesDrawer();
+
+    } else if (!/^[01]+$/.test(normalizedVal)) {
+      // User entered characters other than 0 and 1
+      masterFeedback.textContent = '✗ Key rejected. The Machine\'s Tongue recognizes only two fundamental states.';
+      masterFeedback.style.color = '#f43f5e';
+      playErrorSound();
+      masterPasscode.style.borderColor = '#f43f5e';
+      setTimeout(() => {
+        masterPasscode.style.borderColor = '#fbbf24';
+      }, 1200);
+
     } else {
-      masterFeedback.textContent = '✗ Invalid Master Frequency. Observe the 28 coordinates across the chambers: 2810, 28.10, 2.810...';
+      // User entered binary, but wrong bits / wrong length
+      masterFeedback.textContent = '✗ Frequency misaligned. Re-verify your translation of the recurring coordinate.';
       masterFeedback.style.color = '#f43f5e';
       playErrorSound();
       masterPasscode.style.borderColor = '#f43f5e';
